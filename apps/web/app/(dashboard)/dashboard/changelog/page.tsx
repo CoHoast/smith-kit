@@ -42,7 +42,20 @@ export default function ChangelogPage() {
   const [needsReauth, setNeedsReauth] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; type: 'success' | 'error'; message: string }>({ show: false, type: 'success', message: '' });
+  const [expandedLogs, setExpandedLogs] = useState<Set<string>>(new Set());
   const supabase = createClient();
+
+  const toggleLog = (id: string) => {
+    setExpandedLogs(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
   const showToast = (type: 'success' | 'error', message: string) => {
     setToast({ show: true, type, message });
@@ -357,36 +370,67 @@ export default function ChangelogPage() {
                       </button>
                     </div>
 
-                    {changelogs.map((log) => (
-                      <div key={log.id} className="p-4 rounded-xl bg-[#0a0a0f] border border-[#1e1e2e] group">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-3">
-                            <span className="font-mono text-sm text-[#6366f1]">{log.version}</span>
-                            <span className="text-xs text-[#6b6b80]">
-                              {new Date(log.release_date).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {/* Share button */}
-                            <button
-                              onClick={() => {
-                                navigator.clipboard.writeText(`${window.location.origin}/changelog/${selectedRepo.github_repo_name}#${log.version}`);
-                                showToast('success', 'Release link copied!');
-                              }}
-                              className="opacity-0 group-hover:opacity-100 p-1.5 text-[#6b6b80] hover:text-white transition-all"
-                              title="Copy link to this release"
-                            >
-                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                    {changelogs.map((log, index) => {
+                      const isExpanded = expandedLogs.has(log.id);
+                      const isFirst = index === 0;
+                      
+                      return (
+                        <div key={log.id} className="rounded-xl bg-[#0a0a0f] border border-[#1e1e2e] overflow-hidden">
+                          {/* Accordion Header */}
+                          <button
+                            onClick={() => toggleLog(log.id)}
+                            className="w-full p-4 flex items-center justify-between hover:bg-[#15151f] transition-colors"
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className="font-mono text-sm text-[#6366f1]">{log.version}</span>
+                              {log.title && <span className="text-white font-medium">{log.title}</span>}
+                              <span className="text-xs text-[#6b6b80]">
+                                {new Date(log.release_date).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {/* Share button */}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigator.clipboard.writeText(`${window.location.origin}/changelog/${selectedRepo.github_repo_name}#${log.version}`);
+                                  showToast('success', 'Release link copied!');
+                                }}
+                                className="p-1.5 text-[#6b6b80] hover:text-white transition-all"
+                                title="Copy link to this release"
+                              >
+                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                                </svg>
+                              </button>
+                              {/* Expand/Collapse icon */}
+                              <svg 
+                                className={`w-5 h-5 text-[#6b6b80] transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
+                                viewBox="0 0 24 24" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                strokeWidth="2"
+                              >
+                                <polyline points="6 9 12 15 18 9" />
                               </svg>
-                            </button>
-                          </div>
+                            </div>
+                          </button>
+                          
+                          {/* Accordion Content */}
+                          {(isExpanded || isFirst) && (
+                            <div className={`px-4 pb-4 ${isFirst && !isExpanded ? 'max-h-64 overflow-hidden relative' : ''}`}>
+                              <ChangelogContent content={log.content} />
+                              {isFirst && !isExpanded && (
+                                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0a0a0f] to-transparent flex items-end justify-center pb-4">
+                                  <span className="text-sm text-[#6366f1]">Click to expand</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
-                        {log.title && <h4 className="font-medium text-white mb-4">{log.title}</h4>}
-                        <ChangelogContent content={log.content} />
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
