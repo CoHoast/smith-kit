@@ -2,9 +2,12 @@ import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
   const next = searchParams.get('next') ?? '/dashboard';
+  
+  // Use production URL to avoid Railway internal localhost:8080 redirect
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://smith-kit-production.up.railway.app';
 
   if (code) {
     const supabase = await createClient();
@@ -21,10 +24,10 @@ export async function GET(request: Request) {
           .eq('id', data.session.user.id);
       }
       
-      return NextResponse.redirect(`${origin}${next}`);
+      return NextResponse.redirect(`${baseUrl}${next}`);
     }
   }
 
   // Return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/login?error=auth`);
+  return NextResponse.redirect(`${baseUrl}/login?error=auth`);
 }
