@@ -5,10 +5,16 @@ import { useState } from 'react';
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
   const supabase = createClient();
 
   const handleGitHubLogin = async () => {
     setIsLoading(true);
+    setError('');
     await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
@@ -20,12 +26,46 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
+    setError('');
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/callback`,
       },
     });
+  };
+
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    setMessage('');
+
+    if (mode === 'signup') {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/callback`,
+        },
+      });
+      if (error) {
+        setError(error.message);
+      } else {
+        setMessage('Check your email for the confirmation link!');
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) {
+        setError(error.message);
+      } else {
+        window.location.href = '/dashboard';
+      }
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -43,13 +83,18 @@ export default function LoginPage() {
             </div>
             <span className="text-2xl font-bold text-white">SmithKit</span>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome back</h1>
-          <p className="text-[#a1a1b5]">Sign in to access your dev toolkit</p>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            {mode === 'signin' ? 'Welcome back' : 'Create account'}
+          </h1>
+          <p className="text-[#a1a1b5]">
+            {mode === 'signin' ? 'Sign in to access your dev toolkit' : 'Start building with SmithKit'}
+          </p>
         </div>
 
         {/* Auth Card */}
         <div className="bg-[#12121a] border border-[#27272a] rounded-2xl p-8">
-          <div className="space-y-4">
+          {/* OAuth Buttons */}
+          <div className="space-y-3 mb-6">
             {/* GitHub */}
             <button
               onClick={handleGitHubLogin}
@@ -61,16 +106,6 @@ export default function LoginPage() {
               </svg>
               Continue with GitHub
             </button>
-
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#27272a]"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-[#12121a] text-[#6b6b80]">or</span>
-              </div>
-            </div>
 
             {/* Google */}
             <button
@@ -88,8 +123,85 @@ export default function LoginPage() {
             </button>
           </div>
 
+          {/* Divider */}
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[#27272a]"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-[#12121a] text-[#6b6b80]">or continue with email</span>
+            </div>
+          </div>
+
+          {/* Email Form */}
+          <form onSubmit={handleEmailAuth} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-[#a1a1b5] mb-2">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+                className="w-full px-4 py-3 rounded-xl bg-[#0a0a0f] border border-[#27272a] text-white placeholder-[#6b6b80] focus:border-[#6366f1] focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#a1a1b5] mb-2">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                minLength={6}
+                className="w-full px-4 py-3 rounded-xl bg-[#0a0a0f] border border-[#27272a] text-white placeholder-[#6b6b80] focus:border-[#6366f1] focus:outline-none"
+              />
+            </div>
+
+            {error && (
+              <p className="text-red-500 text-sm">{error}</p>
+            )}
+            {message && (
+              <p className="text-green-500 text-sm">{message}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              {isLoading ? 'Loading...' : mode === 'signin' ? 'Sign In' : 'Create Account'}
+            </button>
+          </form>
+
+          {/* Toggle mode */}
+          <p className="text-center text-sm text-[#6b6b80] mt-6">
+            {mode === 'signin' ? (
+              <>
+                Don&apos;t have an account?{' '}
+                <button
+                  onClick={() => { setMode('signup'); setError(''); setMessage(''); }}
+                  className="text-[#6366f1] hover:underline"
+                >
+                  Sign up
+                </button>
+              </>
+            ) : (
+              <>
+                Already have an account?{' '}
+                <button
+                  onClick={() => { setMode('signin'); setError(''); setMessage(''); }}
+                  className="text-[#6366f1] hover:underline"
+                >
+                  Sign in
+                </button>
+              </>
+            )}
+          </p>
+
           {/* Terms */}
-          <p className="text-center text-xs text-[#6b6b80] mt-6">
+          <p className="text-center text-xs text-[#6b6b80] mt-4">
             By signing in, you agree to our{' '}
             <a href="#" className="text-[#6366f1] hover:underline">Terms of Service</a>
             {' '}and{' '}
@@ -99,7 +211,7 @@ export default function LoginPage() {
 
         {/* Back to home */}
         <p className="text-center text-sm text-[#6b6b80] mt-6">
-          <a href="/" className="hover:text-white transition-colors">← Back to home</a>
+          <a href="https://smithkitlanding-production.up.railway.app" className="hover:text-white transition-colors">← Back to home</a>
         </p>
       </div>
     </div>
