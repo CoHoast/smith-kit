@@ -131,7 +131,7 @@ export default function HomePage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-5 justify-center mb-20">
-              <Link href="#" className="gradient-btn px-10 py-5 rounded-2xl font-semibold text-lg group">
+              <Link href="https://smith-kit-production.up.railway.app/login" className="gradient-btn px-10 py-5 rounded-2xl font-semibold text-lg group">
                 <span className="flex items-center justify-center gap-3">
                   <GitHubIcon className="w-5 h-5" />
                   Start for Free
@@ -224,7 +224,7 @@ export default function HomePage() {
                 
                 {/* CTA */}
                 <Link 
-                  href="#" 
+                  href="https://smith-kit-production.up.railway.app/login" 
                   className="flex items-center gap-1 text-sm font-medium text-[#6366f1] hover:text-[#8b5cf6] transition-colors"
                 >
                   Try {tool.name}
@@ -439,7 +439,7 @@ export default function HomePage() {
           <p className="text-xl md:text-2xl text-[#a1a1b5] mb-12">
             Stop paying $500/mo for tools that should cost <span className="price-highlight font-bold">$39</span>
           </p>
-          <Link href="#" className="gradient-btn px-12 py-6 rounded-2xl font-semibold text-xl inline-flex items-center gap-4 group">
+          <Link href="https://smith-kit-production.up.railway.app/login" className="gradient-btn px-12 py-6 rounded-2xl font-semibold text-xl inline-flex items-center gap-4 group">
             <span className="flex items-center gap-3">
               <GitHubIcon className="w-6 h-6" />
               Get Started for Free
@@ -466,11 +466,11 @@ export default function HomePage() {
             </div>
             
             <div className="flex items-center gap-8 text-sm text-[#6b6b80]">
-              <Link href="#" className="hover:text-white transition-colors text-glow">Privacy</Link>
-              <Link href="#" className="hover:text-white transition-colors text-glow">Terms</Link>
-              <Link href="#" className="hover:text-white transition-colors text-glow">Docs</Link>
-              <Link href="#" className="hover:text-white transition-colors text-glow">Status</Link>
-              <Link href="#" className="hover:text-white transition-colors flex items-center gap-2 text-glow">
+              <Link href="/privacy" className="hover:text-white transition-colors text-glow">Privacy</Link>
+              <Link href="/terms" className="hover:text-white transition-colors text-glow">Terms</Link>
+              <Link href="https://github.com/CoHoast/smith-kit" className="hover:text-white transition-colors text-glow">Docs</Link>
+              <Link href="https://smith-kit-production.up.railway.app/status" className="hover:text-white transition-colors text-glow">Status</Link>
+              <Link href="https://github.com/CoHoast/smith-kit" className="hover:text-white transition-colors flex items-center gap-2 text-glow">
                 <GitHubIcon className="w-4 h-4" />
                 GitHub
               </Link>

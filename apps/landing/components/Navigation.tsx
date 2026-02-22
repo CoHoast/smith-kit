@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 
+const DASHBOARD_URL = "https://smith-kit-production.up.railway.app";
+
 function HammerIcon({ className = "w-6 h-6" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -57,14 +59,14 @@ export default function Navigation() {
         <div className="hidden md:flex items-center gap-8">
           <Link href="#tools" className="text-sm text-[#a1a1aa] hover:text-white transition-colors">Tools</Link>
           <Link href="#pricing" className="text-sm text-[#a1a1aa] hover:text-white transition-colors">Pricing</Link>
-          <Link href="#" className="text-sm text-[#a1a1aa] hover:text-white transition-colors">Docs</Link>
+          <Link href="https://github.com/CoHoast/smith-kit" className="text-sm text-[#a1a1aa] hover:text-white transition-colors">Docs</Link>
         </div>
         
         <div className="hidden md:flex items-center gap-4">
-          <Link href="#" className="text-sm text-[#a1a1aa] hover:text-white transition-colors">
+          <Link href={`${DASHBOARD_URL}/login`} className="text-sm text-[#a1a1aa] hover:text-white transition-colors">
             Log in
           </Link>
-          <Link href="#" className="gradient-btn px-4 py-2 rounded-lg text-sm font-medium">
+          <Link href={`${DASHBOARD_URL}/login`} className="gradient-btn px-4 py-2 rounded-lg text-sm font-medium">
             <span className="flex items-center gap-2">
               <GitHubIcon className="w-4 h-4" />
               Get Started
@@ -101,7 +103,7 @@ export default function Navigation() {
               Pricing
             </Link>
             <Link 
-              href="#" 
+              href="https://github.com/CoHoast/smith-kit"
               onClick={() => setIsOpen(false)}
               className="block text-lg text-[#a1a1aa] hover:text-white transition-colors py-2"
             >
@@ -109,14 +111,14 @@ export default function Navigation() {
             </Link>
             <div className="pt-4 border-t border-[#1e1e2e] space-y-4">
               <Link 
-                href="#" 
+                href={`${DASHBOARD_URL}/login`}
                 onClick={() => setIsOpen(false)}
                 className="block text-lg text-[#a1a1aa] hover:text-white transition-colors py-2"
               >
                 Log in
               </Link>
               <Link 
-                href="#" 
+                href={`${DASHBOARD_URL}/login`}
                 onClick={() => setIsOpen(false)}
                 className="gradient-btn px-6 py-3 rounded-xl font-medium inline-flex items-center gap-2"
               >

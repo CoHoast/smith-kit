@@ -29,26 +29,8 @@ const faqs = [
   }
 ];
 
-function ChevronIcon({ className = "w-5 h-5", expanded = false }: { className?: string; expanded?: boolean }) {
-  return (
-    <svg 
-      className={`${className} transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2"
-    >
-      <polyline points="6,9 12,15 18,9" />
-    </svg>
-  );
-}
-
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const toggleItem = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
 
   return (
     <section className="py-28 px-6 relative">
@@ -63,31 +45,36 @@ export default function FAQ() {
         </div>
         
         <div className="space-y-4">
-          {faqs.map((faq, index) => (
-            <div key={index} className="glass-card overflow-hidden">
-              <button
-                onClick={() => toggleItem(index)}
-                className="w-full p-6 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors cursor-pointer"
-              >
-                <h3 className="text-lg font-semibold pr-4">{faq.question}</h3>
-                <ChevronIcon 
-                  className="w-5 h-5 text-[#6366f1] flex-shrink-0" 
-                  expanded={openIndex === index} 
-                />
-              </button>
-              <div 
-                className={`grid transition-all duration-300 ease-in-out ${
-                  openIndex === index ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <p className="px-6 pb-6 text-[#a1a1b5] leading-relaxed">
-                    {faq.answer}
-                  </p>
-                </div>
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
+            return (
+              <div key={index} className="glass-card overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  className="w-full p-6 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors"
+                >
+                  <h3 className="text-lg font-semibold pr-4">{faq.question}</h3>
+                  <svg 
+                    className={`w-5 h-5 text-[#6366f1] flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2"
+                  >
+                    <polyline points="6,9 12,15 18,9" />
+                  </svg>
+                </button>
+                {isOpen && (
+                  <div className="px-6 pb-6 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <p className="text-[#a1a1b5] leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
