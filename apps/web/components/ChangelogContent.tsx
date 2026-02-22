@@ -1,12 +1,14 @@
 'use client';
 
+import React from 'react';
+
 interface ChangelogContentProps {
   content: string;
 }
 
 export function ChangelogContent({ content }: ChangelogContentProps) {
   const lines = content.split('\n');
-  const elements: JSX.Element[] = [];
+  const elements: React.ReactElement[] = [];
   let currentList: string[] = [];
   let listKey = 0;
 
