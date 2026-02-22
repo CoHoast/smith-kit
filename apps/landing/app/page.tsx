@@ -142,27 +142,32 @@ export default function HomePage() {
               </Link>
             </div>
             
-            {/* Value prop comparison */}
-            <div className="glass-card p-8 max-w-3xl mx-auto glow">
-              <p className="text-xs text-[#6b6b80] mb-6 uppercase tracking-[0.2em] font-medium">Stop overpaying for your stack</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+            {/* Value prop comparison - cleaner design */}
+            <div className="glass-card p-6 md:p-8 max-w-2xl mx-auto">
+              <p className="text-center text-sm text-[#a1a1b5] mb-6">
+                What you&apos;d pay separately:
+              </p>
+              
+              {/* Competitor prices - horizontal on all screens */}
+              <div className="flex flex-wrap justify-center gap-3 mb-6">
                 {COMPETITORS.map((comp) => (
-                  <div key={comp.name} className="text-center p-3 rounded-xl bg-[#0a0a12]/50">
-                    <p className="strike-price text-xl font-bold">{comp.price}</p>
-                    <p className="text-xs text-[#6b6b80] mt-1">{comp.name}</p>
+                  <div key={comp.name} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#1a1a25]/50 border border-[#2a2a3a]">
+                    <span className="text-[#6b6b80] line-through text-sm">{comp.price}</span>
+                    <span className="text-[#52525b] text-xs">{comp.name}</span>
                   </div>
                 ))}
               </div>
-              <div className="pt-6 border-t border-[#1e1e2e]">
-                <p className="text-3xl md:text-4xl font-bold">
-                  <span className="gradient-text">SmithKit:</span> <span className="price-highlight font-bold">$39/mo</span> <span className="text-[#a1a1b5] font-normal text-xl">for all of it</span>
+              
+              {/* Total vs SmithKit */}
+              <div className="text-center pt-5 border-t border-[#1e1e2e]">
+                <p className="text-[#6b6b80] text-sm mb-2">Total: <span className="line-through">$500+/mo</span></p>
+                <p className="text-3xl md:text-4xl font-bold mb-3">
+                  <span className="gradient-text">SmithKit:</span>{" "}
+                  <span className="price-highlight">$39/mo</span>
                 </p>
-                <p className="text-sm text-[#10b981] mt-3 flex items-center justify-center gap-2">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10b981]"></span>
-                  </span>
-                  Early adopters grandfathered in forever
+                <p className="inline-flex items-center gap-2 text-sm text-[#10b981] bg-[#10b981]/10 px-4 py-2 rounded-full">
+                  <span className="w-2 h-2 rounded-full bg-[#10b981]"></span>
+                  Early adopters locked in forever
                 </p>
               </div>
             </div>

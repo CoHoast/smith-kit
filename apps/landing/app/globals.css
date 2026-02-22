@@ -443,21 +443,12 @@ body::before {
   background: linear-gradient(90deg, transparent, var(--accent-start), var(--accent-pink), var(--accent-secondary), transparent);
 }
 
-/* Strike-through prices */
+/* Strike-through prices - subtle style */
 .strike-price {
   position: relative;
-  color: #ef4444;
-}
-
-.strike-price::after {
-  content: '';
-  position: absolute;
-  left: -5%;
-  right: -5%;
-  top: 50%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #ef4444, transparent);
-  transform: rotate(-5deg);
+  color: #6b6b80;
+  text-decoration: line-through;
+  text-decoration-color: #52525b;
 }
 
 /* Nav blur */
