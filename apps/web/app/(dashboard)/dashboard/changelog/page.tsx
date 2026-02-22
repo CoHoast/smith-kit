@@ -139,6 +139,34 @@ export default function ChangelogPage() {
     });
   };
 
+  const disconnectRepo = async (repoId: string, repoName: string) => {
+    if (!confirm(`Disconnect ${repoName}? This will remove the repo and all its changelogs.`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/changelog/repos/${repoId}`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        showToast('success', 'Repository disconnected');
+        // Clear selection if we deleted the selected repo
+        if (selectedRepo?.id === repoId) {
+          setSelectedRepo(null);
+          setChangelogs([]);
+        }
+        loadData();
+      } else {
+        const error = await res.json();
+        showToast('error', error.error || 'Failed to disconnect repo');
+      }
+    } catch (error) {
+      console.error('Failed to disconnect repo:', error);
+      showToast('error', 'Failed to disconnect repo');
+    }
+  };
+
   const loadChangelogs = async (repoId: string) => {
     const { data } = await supabase
       .from('changelogs')
@@ -274,23 +302,39 @@ export default function ChangelogPage() {
               <h3 className="text-sm font-semibold text-[#6b6b80] uppercase tracking-wider mb-4">Connected Repos</h3>
               <div className="space-y-2">
                 {connectedRepos.map((repo) => (
-                  <button
+                  <div
                     key={repo.id}
-                    onClick={() => {
-                      setSelectedRepo(repo);
-                      loadChangelogs(repo.id);
-                    }}
-                    className={`w-full text-left px-4 py-3 rounded-xl transition-colors ${
+                    className={`group relative w-full text-left px-4 py-3 rounded-xl transition-colors cursor-pointer ${
                       selectedRepo?.id === repo.id
                         ? 'bg-[#6366f1]/10 border border-[#6366f1]/30'
                         : 'hover:bg-[#1a1a25]'
                     }`}
+                    onClick={() => {
+                      setSelectedRepo(repo);
+                      loadChangelogs(repo.id);
+                    }}
                   >
-                    <p className="font-medium text-white">{repo.github_repo_name}</p>
-                    <p className="text-xs text-[#6b6b80]">
-                      {repo.is_active ? '● Active' : '○ Inactive'}
-                    </p>
-                  </button>
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-white truncate">{repo.github_repo_name}</p>
+                        <p className="text-xs text-[#6b6b80]">
+                          {repo.is_active ? '● Active' : '○ Inactive'}
+                        </p>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          disconnectRepo(repo.id, repo.github_repo_name);
+                        }}
+                        className="opacity-0 group-hover:opacity-100 p-1.5 text-[#6b6b80] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
+                        title="Disconnect repository"
+                      >
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
