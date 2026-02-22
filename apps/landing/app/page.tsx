@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { TOOLS, PRICING, COMPETITORS, getLiveTools, getComingSoonTools } from "@/lib/tools";
+import { PRICING, COMPETITORS, getLiveTools, getComingSoonTools } from "@/lib/tools";
 import Navigation from "@/components/Navigation";
 
 // Icons
@@ -280,7 +280,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-2xl font-bold mb-4">Sign Up Free</h3>
               <p className="text-[#a1a1b5] text-lg leading-relaxed">
-                GitHub or Google OAuth. One click, you're in. No credit card required.
+                GitHub or Google OAuth. One click, you&apos;re in. No credit card required.
               </p>
             </div>
             
@@ -443,8 +443,8 @@ export default function HomePage() {
             <div className="glass-card p-6">
               <h3 className="text-lg font-semibold mb-3">Do I have to use all the tools?</h3>
               <p className="text-[#a1a1b5] leading-relaxed">
-                Nope! While all tools are included in every plan, you only use what you need. Enable Changelog today, add Uptime monitoring next month — it's up to you. 
-                You're not paying extra either way.
+                Nope! While all tools are included in every plan, you only use what you need. Enable Changelog today, add Uptime monitoring next month — it&apos;s up to you. 
+                You&apos;re not paying extra either way.
               </p>
             </div>
             
@@ -452,16 +452,16 @@ export default function HomePage() {
             <div className="glass-card p-6">
               <h3 className="text-lg font-semibold mb-3">What happens when you add new tools?</h3>
               <p className="text-[#a1a1b5] leading-relaxed">
-                You get them automatically at no extra cost. We're building WebhookLab, ToggleBox, and CronPilot right now. 
-                When they launch, they'll appear in your dashboard — no price increase, no upgrade required.
+                You get them automatically at no extra cost. We&apos;re building WebhookLab, ToggleBox, and CronPilot right now. 
+                When they launch, they&apos;ll appear in your dashboard — no price increase, no upgrade required.
               </p>
             </div>
             
             {/* FAQ Item 4 */}
             <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold mb-3">What does "grandfathered forever" mean?</h3>
+              <h3 className="text-lg font-semibold mb-3">What does &quot;grandfathered forever&quot; mean?</h3>
               <p className="text-[#a1a1b5] leading-relaxed">
-                If you sign up now at $39/mo, that's your price forever — even if we raise prices later. 
+                If you sign up now at $39/mo, that&apos;s your price forever — even if we raise prices later. 
                 Early adopters who believe in us get rewarded with locked-in pricing for life.
               </p>
             </div>
@@ -471,7 +471,7 @@ export default function HomePage() {
               <h3 className="text-lg font-semibold mb-3">Can I cancel anytime?</h3>
               <p className="text-[#a1a1b5] leading-relaxed">
                 Yes. No contracts, no commitments. Cancel with one click from your dashboard. 
-                We'd rather earn your business every month than lock you in.
+                We&apos;d rather earn your business every month than lock you in.
               </p>
             </div>
             
@@ -479,7 +479,7 @@ export default function HomePage() {
             <div className="glass-card p-6">
               <h3 className="text-lg font-semibold mb-3">How is this so much cheaper than competitors?</h3>
               <p className="text-[#a1a1b5] leading-relaxed">
-                We're built lean. No enterprise sales team, no bloated features, no VC pressure to maximize extraction. 
+                We&apos;re built lean. No enterprise sales team, no bloated features, no VC pressure to maximize extraction. 
                 We build focused tools that work, price them fairly, and let the product speak for itself.
               </p>
             </div>
