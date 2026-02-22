@@ -3,6 +3,123 @@
 import { createClient } from '@/lib/supabase/client';
 import { useState, useEffect } from 'react';
 
+// Code Examples Component
+function CodeExamples({ apiKey }: { apiKey: string }) {
+  const [activeTab, setActiveTab] = useState<'javascript' | 'react' | 'python' | 'curl'>('javascript');
+  const [copied, setCopied] = useState(false);
+  
+  const baseUrl = 'https://smith-kit-production.up.railway.app';
+  
+  const examples = {
+    javascript: `// Check if a feature is enabled
+async function isFeatureEnabled(flagKey) {
+  const response = await fetch('${baseUrl}/api/flags/' + flagKey, {
+    headers: {
+      'Authorization': 'Bearer ${apiKey}'
+    }
+  });
+  const data = await response.json();
+  return data.enabled;
+}
+
+// Usage
+if (await isFeatureEnabled('dark_mode')) {
+  enableDarkMode();
+}`,
+    react: `import { useState, useEffect } from 'react';
+
+// Custom hook for feature flags
+function useFeatureFlag(flagKey) {
+  const [enabled, setEnabled] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('${baseUrl}/api/flags/' + flagKey, {
+      headers: {
+        'Authorization': 'Bearer ${apiKey}'
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setEnabled(data.enabled);
+        setLoading(false);
+      });
+  }, [flagKey]);
+
+  return { enabled, loading };
+}
+
+// Usage in component
+function MyComponent() {
+  const { enabled: darkMode } = useFeatureFlag('dark_mode');
+  
+  return darkMode ? <DarkTheme /> : <LightTheme />;
+}`,
+    python: `import requests
+
+API_KEY = "${apiKey}"
+BASE_URL = "${baseUrl}"
+
+def is_feature_enabled(flag_key):
+    response = requests.get(
+        f"{BASE_URL}/api/flags/{flag_key}",
+        headers={"Authorization": f"Bearer {API_KEY}"}
+    )
+    return response.json().get("enabled", False)
+
+# Usage
+if is_feature_enabled("dark_mode"):
+    enable_dark_mode()`,
+    curl: `# Check a single flag
+curl ${baseUrl}/api/flags/dark_mode \\
+  -H "Authorization: Bearer ${apiKey}"
+
+# Response: {"key":"dark_mode","enabled":true}`
+  };
+
+  const copyCode = () => {
+    navigator.clipboard.writeText(examples[activeTab]);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="mt-4">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-xs text-[#6b6b80]">Code Examples</p>
+        <div className="flex gap-1">
+          {(['javascript', 'react', 'python', 'curl'] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-3 py-1 text-xs rounded-lg transition-colors ${
+                activeTab === tab
+                  ? 'bg-[#6366f1] text-white'
+                  : 'text-[#6b6b80] hover:text-white hover:bg-[#1a1a25]'
+              }`}
+            >
+              {tab === 'javascript' ? 'JS' : tab === 'react' ? 'React' : tab === 'python' ? 'Python' : 'cURL'}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="relative">
+        <pre className="p-4 rounded-xl bg-[#0a0a0f] border border-[#27272a] overflow-x-auto">
+          <code className="text-xs text-[#a1a1b5] font-mono whitespace-pre">
+            {examples[activeTab]}
+          </code>
+        </pre>
+        <button
+          onClick={copyCode}
+          className="absolute top-3 right-3 px-2 py-1 text-xs rounded-lg bg-[#27272a] text-[#a1a1b5] hover:text-white transition-colors"
+        >
+          {copied ? '✓ Copied' : 'Copy'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 interface Project {
   id: string;
   name: string;
@@ -298,14 +415,8 @@ export default function ToggleBoxPage() {
                     </div>
                   </div>
 
-                  {/* Usage Example */}
-                  <div className="mt-4 p-4 rounded-xl bg-[#0a0a0f] border border-[#27272a]">
-                    <p className="text-xs text-[#6b6b80] mb-2">Usage</p>
-                    <code className="text-xs text-[#a1a1b5] font-mono block whitespace-pre-wrap">
-{`curl https://smith-kit-production.up.railway.app/api/flags/your_flag_key \\
-  -H "Authorization: Bearer ${selectedProject.api_key.substring(0, 15)}..."`}
-                    </code>
-                  </div>
+                  {/* Code Examples */}
+                  <CodeExamples apiKey={selectedProject.api_key} />
                 </div>
 
                 {/* Flags List */}
