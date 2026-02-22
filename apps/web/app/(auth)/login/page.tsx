@@ -15,14 +15,10 @@ export default function LoginPage() {
   const handleGitHubLogin = async () => {
     setIsLoading(true);
     setError('');
-    // Use production URL directly to avoid any localhost redirect issues
-    const baseUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://smith-kit-production.up.railway.app'
-      : window.location.origin;
     await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: `${baseUrl}/callback`,
+        redirectTo: 'https://smith-kit-production.up.railway.app/callback',
         scopes: 'read:user user:email repo',
       },
     });
