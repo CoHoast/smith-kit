@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export",
+  // Use default server mode for Railway deployment
   images: {
     unoptimized: true,
   },
