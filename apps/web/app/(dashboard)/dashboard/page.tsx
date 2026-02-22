@@ -48,6 +48,21 @@ const tools = [
     statKey: 'commits',
     statLabel: 'Commits this month',
   },
+  {
+    id: 'togglebox',
+    name: 'ToggleBox',
+    description: 'Feature flags to control your app without deploying',
+    icon: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="1" y="5" width="22" height="14" rx="7" ry="7" />
+        <circle cx="16" cy="12" r="3" />
+      </svg>
+    ),
+    color: 'from-cyan-500 to-blue-600',
+    href: '/dashboard/togglebox',
+    statKey: 'flags',
+    statLabel: 'Flags active',
+  },
 ];
 
 // Activity icon components
@@ -112,6 +127,11 @@ export default async function DashboardPage() {
     .eq('user_id', user?.id)
     .single();
 
+  const { data: flags } = await supabase
+    .from('togglebox_flags')
+    .select('id, togglebox_projects!inner(user_id)')
+    .eq('togglebox_projects.user_id', user?.id);
+
   // Get recent activity
   const { data: recentChangelogs } = await supabase
     .from('changelogs')
@@ -130,6 +150,7 @@ export default async function DashboardPage() {
     repos: repos?.length || 0,
     monitors: monitors?.length || 0,
     commits: usage?.commitbot_count || 0,
+    flags: flags?.length || 0,
   };
 
   // Combine and sort recent activity
@@ -319,6 +340,22 @@ export default async function DashboardPage() {
               <div>
                 <p className="text-sm font-medium text-white">Generate API key</p>
                 <p className="text-xs text-[#6b6b80]">Use CommitBot in your workflow</p>
+              </div>
+            </Link>
+            
+            <Link
+              href="/dashboard/togglebox"
+              className="flex items-center gap-3 p-3 rounded-xl bg-[#0a0a0f] hover:bg-[#15151f] border border-transparent hover:border-[#2a2a3a] transition-all group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
+                <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="1" y="5" width="22" height="14" rx="7" ry="7" />
+                  <circle cx="16" cy="12" r="3" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-white">Create feature flag</p>
+                <p className="text-xs text-[#6b6b80]">Control features without deploying</p>
               </div>
             </Link>
           </div>
