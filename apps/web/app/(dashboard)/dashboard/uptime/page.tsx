@@ -23,6 +23,9 @@ export default function UptimePage() {
 
   useEffect(() => {
     loadMonitors();
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(loadMonitors, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const loadMonitors = async () => {
@@ -43,22 +46,29 @@ export default function UptimePage() {
     if (!newMonitor.name || !newMonitor.url) return;
     
     setIsSaving(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
 
-    const { error } = await supabase.from('uptime_monitors').insert({
-      user_id: user.id,
-      name: newMonitor.name,
-      url: newMonitor.url,
-      current_status: 'unknown',
-      interval_seconds: 60,
-      is_active: true,
-    });
+    try {
+      const res = await fetch('/api/uptime/monitors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newMonitor.name,
+          url: newMonitor.url,
+        }),
+      });
 
-    if (!error) {
-      setShowAddModal(false);
-      setNewMonitor({ name: '', url: '' });
-      loadMonitors();
+      if (res.ok) {
+        setShowAddModal(false);
+        setNewMonitor({ name: '', url: '' });
+        // Wait a moment for the first check to complete
+        setTimeout(() => loadMonitors(), 1000);
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Failed to add monitor');
+      }
+    } catch (error) {
+      console.error('Failed to add monitor:', error);
+      alert('Failed to add monitor');
     }
     setIsSaving(false);
   };

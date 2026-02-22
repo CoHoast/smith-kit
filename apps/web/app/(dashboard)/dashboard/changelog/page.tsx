@@ -3,12 +3,22 @@
 import { createClient } from '@/lib/supabase/client';
 import { useState, useEffect } from 'react';
 
-interface Repo {
+interface ConnectedRepo {
   id: string;
   github_repo_name: string;
   github_repo_id: number;
   is_active: boolean;
   created_at: string;
+}
+
+interface GitHubRepo {
+  id: number;
+  full_name: string;
+  name: string;
+  private: boolean;
+  default_branch: string;
+  description: string | null;
+  connected: boolean;
 }
 
 interface Changelog {
@@ -20,29 +30,82 @@ interface Changelog {
 }
 
 export default function ChangelogPage() {
-  const [repos, setRepos] = useState<Repo[]>([]);
-  const [selectedRepo, setSelectedRepo] = useState<Repo | null>(null);
+  const [connectedRepos, setConnectedRepos] = useState<ConnectedRepo[]>([]);
+  const [githubRepos, setGithubRepos] = useState<GitHubRepo[]>([]);
+  const [selectedRepo, setSelectedRepo] = useState<ConnectedRepo | null>(null);
   const [changelogs, setChangelogs] = useState<Changelog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showRepoModal, setShowRepoModal] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [needsReauth, setNeedsReauth] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
-    loadRepos();
+    loadData();
   }, []);
 
-  const loadRepos = async () => {
+  const loadData = async () => {
+    // Load connected repos from database
     const { data } = await supabase
       .from('changelog_repos')
       .select('*')
       .order('created_at', { ascending: false });
     
-    setRepos(data || []);
+    setConnectedRepos(data || []);
     setIsLoading(false);
   };
 
-  const connectGitHub = async () => {
-    // For now, redirect to GitHub OAuth
-    // In production, this would use a GitHub App installation flow
+  const fetchGitHubRepos = async () => {
+    setShowRepoModal(true);
+    setIsLoading(true);
+    
+    try {
+      const res = await fetch('/api/github/repos');
+      const data = await res.json();
+      
+      if (data.needsReauth) {
+        setNeedsReauth(true);
+        setIsLoading(false);
+        return;
+      }
+      
+      if (data.repos) {
+        setGithubRepos(data.repos);
+      }
+    } catch (error) {
+      console.error('Failed to fetch repos:', error);
+    }
+    setIsLoading(false);
+  };
+
+  const connectRepo = async (repo: GitHubRepo) => {
+    setIsConnecting(true);
+    
+    try {
+      const res = await fetch('/api/changelog/repos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          github_repo_id: repo.id,
+          github_repo_name: repo.full_name,
+          default_branch: repo.default_branch,
+        }),
+      });
+      
+      if (res.ok) {
+        setShowRepoModal(false);
+        loadData();
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Failed to connect repo');
+      }
+    } catch (error) {
+      console.error('Failed to connect repo:', error);
+    }
+    setIsConnecting(false);
+  };
+
+  const reauthorizeGitHub = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
@@ -62,7 +125,7 @@ export default function ChangelogPage() {
     setChangelogs(data || []);
   };
 
-  if (isLoading) {
+  if (isLoading && !showRepoModal) {
     return (
       <div className="p-8 flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#6366f1]"></div>
@@ -79,17 +142,17 @@ export default function ChangelogPage() {
           <p className="text-[#a1a1b5]">AI-powered release notes from your GitHub commits</p>
         </div>
         <button
-          onClick={connectGitHub}
+          onClick={fetchGitHubRepos}
           className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white font-medium text-sm hover:opacity-90 transition-opacity"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
           </svg>
-          Connect GitHub
+          Connect Repository
         </button>
       </div>
 
-      {repos.length === 0 ? (
+      {connectedRepos.length === 0 ? (
         /* Empty State */
         <div className="flex flex-col items-center justify-center py-20">
           <div className="w-16 h-16 rounded-2xl bg-[#1a1a25] flex items-center justify-center mb-6">
@@ -103,7 +166,7 @@ export default function ChangelogPage() {
             Connect your GitHub repositories to automatically generate beautiful changelogs from your commits.
           </p>
           <button
-            onClick={connectGitHub}
+            onClick={fetchGitHubRepos}
             className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#24292e] hover:bg-[#2f363d] text-white font-medium transition-colors"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -145,7 +208,7 @@ export default function ChangelogPage() {
             <div className="bg-[#12121a] border border-[#1e1e2e] rounded-2xl p-4">
               <h3 className="text-sm font-semibold text-[#6b6b80] uppercase tracking-wider mb-4">Connected Repos</h3>
               <div className="space-y-2">
-                {repos.map((repo) => (
+                {connectedRepos.map((repo) => (
                   <button
                     key={repo.id}
                     onClick={() => {
@@ -215,6 +278,77 @@ export default function ChangelogPage() {
                 <p className="text-[#6b6b80]">Select a repository to view changelogs</p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Repository Selection Modal */}
+      {showRepoModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#12121a] border border-[#27272a] rounded-2xl w-full max-w-lg max-h-[80vh] overflow-hidden">
+            <div className="p-6 border-b border-[#27272a]">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-white">Select Repository</h2>
+                <button
+                  onClick={() => setShowRepoModal(false)}
+                  className="text-[#6b6b80] hover:text-white"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 overflow-y-auto max-h-[60vh]">
+              {isLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#6366f1]"></div>
+                </div>
+              ) : needsReauth ? (
+                <div className="text-center py-8">
+                  <p className="text-[#a1a1b5] mb-4">Your GitHub token has expired. Please re-authenticate.</p>
+                  <button
+                    onClick={reauthorizeGitHub}
+                    className="px-4 py-2 rounded-xl bg-[#24292e] text-white font-medium hover:bg-[#2f363d] transition-colors"
+                  >
+                    Re-authenticate with GitHub
+                  </button>
+                </div>
+              ) : githubRepos.length === 0 ? (
+                <p className="text-center text-[#6b6b80] py-8">No repositories found.</p>
+              ) : (
+                <div className="space-y-2">
+                  {githubRepos.map((repo) => (
+                    <button
+                      key={repo.id}
+                      onClick={() => !repo.connected && connectRepo(repo)}
+                      disabled={repo.connected || isConnecting}
+                      className={`w-full text-left p-4 rounded-xl border transition-colors ${
+                        repo.connected
+                          ? 'border-green-500/30 bg-green-500/5 cursor-not-allowed'
+                          : 'border-[#27272a] hover:border-[#6366f1]/50 hover:bg-[#1a1a25]'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-white">{repo.full_name}</p>
+                          {repo.description && (
+                            <p className="text-sm text-[#6b6b80] mt-1 line-clamp-1">{repo.description}</p>
+                          )}
+                        </div>
+                        {repo.connected ? (
+                          <span className="text-xs text-green-500 font-medium">Connected</span>
+                        ) : repo.private ? (
+                          <span className="text-xs text-[#6b6b80]">Private</span>
+                        ) : null}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
