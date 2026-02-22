@@ -47,13 +47,17 @@ Contributors: ${contributors.length > 0 ? contributors.map(c => `@${c}`).join(',
 Commits since last release:
 ${commitList}
 
-Create a comprehensive changelog entry using these sections (ONLY include sections that have relevant changes):
+Create a comprehensive changelog entry. ALWAYS include these critical sections (even if empty):
 
 ## ⚠️ Breaking Changes
 For any changes that break backward compatibility, require migration, or change existing behavior significantly.
+If none found, write: "- None in this release ✓"
 
 ## 🔒 Security
 For security patches, vulnerability fixes, or security-related improvements.
+If none found, write: "- No security issues addressed in this release ✓"
+
+Then include these sections ONLY if they have relevant changes:
 
 ## ✨ New Features
 For new functionality, capabilities, or user-facing features.
@@ -71,11 +75,11 @@ For dependency updates, refactoring, documentation, or internal changes.
 For features or APIs being phased out (mention what to use instead).
 
 Rules:
+- ALWAYS include Breaking Changes and Security sections (with "None" note if empty)
 - Write in clear, user-friendly language (not developer jargon)
 - Be specific about what changed and why it matters to users
 - Each item should be 1-2 sentences max
 - Skip trivial commits (typo fixes, merge commits, formatting)
-- If a section would be empty, omit it entirely
 - Start each item with a verb (Added, Fixed, Improved, Updated, etc.)
 
 At the end, add:
