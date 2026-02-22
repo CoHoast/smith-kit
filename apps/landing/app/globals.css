@@ -1,0 +1,519 @@
+@import "tailwindcss";
+
+:root {
+  /* Base colors - deeper, richer */
+  --bg-primary: #030305;
+  --bg-secondary: #08080f;
+  --bg-tertiary: #0f0f1a;
+  --bg-card: #0a0a14;
+  
+  /* Text */
+  --text-primary: #f8f8fc;
+  --text-secondary: #a1a1b5;
+  --text-muted: #6b6b80;
+  
+  /* Primary gradient - Electric Indigo to Violet */
+  --accent-start: #6366f1;
+  --accent-mid: #8b5cf6;
+  --accent-end: #c084fc;
+  
+  /* Secondary accent - Cyan pop */
+  --accent-secondary: #22d3ee;
+  --accent-secondary-dim: #0891b2;
+  
+  /* Warm accent - Orange/Amber for contrast */
+  --accent-warm: #f97316;
+  --accent-warm-light: #fb923c;
+  
+  /* Pink accent */
+  --accent-pink: #ec4899;
+  --accent-pink-light: #f472b6;
+  
+  /* Success green */
+  --success: #10b981;
+  --success-glow: rgba(16, 185, 129, 0.4);
+  
+  /* Borders */
+  --border-color: #1a1a2e;
+  --border-hover: #2a2a45;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle grain texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+::selection {
+  background: var(--accent-start);
+  color: white;
+}
+
+/* Gradient text - more vibrant */
+.gradient-text {
+  background: linear-gradient(135deg, #818cf8 0%, #a78bfa 30%, #c084fc 60%, #f472b6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Warm gradient text */
+.gradient-text-warm {
+  background: linear-gradient(135deg, var(--accent-warm) 0%, var(--accent-pink) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient button - more dramatic with glow */
+.gradient-btn {
+  background: linear-gradient(135deg, var(--accent-start) 0%, var(--accent-mid) 50%, var(--accent-end) 100%);
+  color: white;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 4px 20px rgba(99, 102, 241, 0.4),
+    0 0 40px rgba(139, 92, 246, 0.2);
+}
+
+.gradient-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent-mid) 0%, var(--accent-pink) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gradient-btn:hover::before {
+  opacity: 1;
+}
+
+.gradient-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(99, 102, 241, 0.5),
+    0 0 80px rgba(139, 92, 246, 0.3),
+    0 0 120px rgba(236, 72, 153, 0.2);
+}
+
+.gradient-btn span {
+  position: relative;
+  z-index: 1;
+}
+
+/* Aurora hero background */
+.hero-aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+.hero-aurora::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 40% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(34, 211, 238, 0.1) 0%, transparent 50%);
+  animation: aurora 20s ease-in-out infinite;
+}
+
+.hero-aurora::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(ellipse at 60% 30%, rgba(249, 115, 22, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 20% 70%, rgba(192, 132, 252, 0.12) 0%, transparent 50%);
+  animation: aurora 25s ease-in-out infinite reverse;
+}
+
+@keyframes aurora {
+  0%, 100% { 
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  25% { 
+    transform: translate(5%, 5%) rotate(2deg) scale(1.05);
+  }
+  50% { 
+    transform: translate(-5%, 10%) rotate(-1deg) scale(1.02);
+  }
+  75% { 
+    transform: translate(8%, -5%) rotate(1deg) scale(1.08);
+  }
+}
+
+/* Floating orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: float-orb 20s ease-in-out infinite;
+}
+
+.orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.25) 0%, transparent 70%);
+  top: 20%;
+  right: 15%;
+  animation-delay: -5s;
+}
+
+.orb-3 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.2) 0%, transparent 70%);
+  bottom: 20%;
+  left: 20%;
+  animation-delay: -10s;
+}
+
+.orb-4 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.2) 0%, transparent 70%);
+  bottom: 30%;
+  right: 25%;
+  animation-delay: -15s;
+}
+
+@keyframes float-orb {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+  }
+  25% { 
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  50% { 
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+  75% { 
+    transform: translate(20px, 30px) scale(1.05);
+  }
+}
+
+/* Grid pattern overlay */
+.grid-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+}
+
+/* Glass card - more depth */
+.glass-card {
+  background: linear-gradient(135deg, rgba(15, 15, 26, 0.9) 0%, rgba(10, 10, 20, 0.95) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 24px;
+  box-shadow: 
+    0 4px 24px rgba(0, 0, 0, 0.5),
+    0 0 60px rgba(99, 102, 241, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Tool card - premium feel with gradient border on hover */
+.tool-card {
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.tool-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.05) 50%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.tool-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-start), var(--accent-pink), var(--accent-secondary));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.tool-card:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+  transform: translateY(-8px);
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.5),
+    0 0 100px rgba(99, 102, 241, 0.15),
+    0 0 40px rgba(236, 72, 153, 0.1);
+}
+
+.tool-card:hover::before,
+.tool-card:hover::after {
+  opacity: 1;
+}
+
+/* Feature card */
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Pricing card - dramatic */
+.pricing-card {
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-primary) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.pricing-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--border-hover);
+}
+
+.pricing-popular {
+  border: 2px solid transparent;
+  background: 
+    linear-gradient(180deg, rgba(99, 102, 241, 0.1) 0%, var(--bg-primary) 100%) padding-box,
+    linear-gradient(135deg, var(--accent-start), var(--accent-pink), var(--accent-secondary)) border-box;
+  box-shadow: 
+    0 0 60px rgba(99, 102, 241, 0.2),
+    0 0 100px rgba(236, 72, 153, 0.1);
+}
+
+.pricing-popular:hover {
+  box-shadow: 
+    0 0 80px rgba(99, 102, 241, 0.3),
+    0 25px 50px rgba(0, 0, 0, 0.4),
+    0 0 120px rgba(236, 72, 153, 0.15);
+}
+
+/* Glow effects */
+.glow {
+  box-shadow: 
+    0 0 60px rgba(99, 102, 241, 0.2),
+    0 0 100px rgba(139, 92, 246, 0.1);
+}
+
+.glow-strong {
+  box-shadow: 
+    0 0 100px rgba(99, 102, 241, 0.3),
+    0 0 200px rgba(139, 92, 246, 0.15),
+    0 0 300px rgba(236, 72, 153, 0.1);
+}
+
+/* Tool icon colors - more vibrant with glow */
+.tool-icon-changelog {
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
+}
+
+.tool-icon-uptime {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
+}
+
+.tool-icon-commits {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5);
+}
+
+.tool-icon-webhooks {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.5);
+}
+
+.tool-icon-flags {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.5);
+}
+
+.tool-icon-cron {
+  background: linear-gradient(135deg, #06b6d4, #22d3ee);
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.5);
+}
+
+/* Badge styles */
+.badge-live {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.5);
+}
+
+.badge-soon {
+  background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+  border: 1px solid var(--border-color);
+}
+
+/* Logo animation - rainbow glow */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px rgba(99, 102, 241, 0.5),
+      0 0 40px rgba(139, 92, 246, 0.3),
+      0 0 60px rgba(236, 72, 153, 0.2);
+  }
+  33% {
+    box-shadow: 
+      0 0 30px rgba(139, 92, 246, 0.5),
+      0 0 50px rgba(236, 72, 153, 0.3),
+      0 0 70px rgba(34, 211, 238, 0.2);
+  }
+  66% {
+    box-shadow: 
+      0 0 25px rgba(236, 72, 153, 0.5),
+      0 0 45px rgba(34, 211, 238, 0.3),
+      0 0 65px rgba(99, 102, 241, 0.2);
+  }
+}
+
+.logo-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* Step circles - vibrant gradient */
+.step-circle {
+  background: linear-gradient(135deg, var(--accent-start) 0%, var(--accent-pink) 100%);
+  box-shadow: 
+    0 4px 20px rgba(99, 102, 241, 0.5),
+    0 0 40px rgba(236, 72, 153, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Section divider - gradient line */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-start), var(--accent-pink), var(--accent-secondary), transparent);
+}
+
+/* Strike-through prices */
+.strike-price {
+  position: relative;
+  color: #ef4444;
+}
+
+.strike-price::after {
+  content: '';
+  position: absolute;
+  left: -5%;
+  right: -5%;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ef4444, transparent);
+  transform: rotate(-5deg);
+}
+
+/* Nav blur */
+.nav-blur {
+  background: rgba(3, 3, 5, 0.8);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Text glow on hover */
+.text-glow:hover {
+  text-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+}
+
+/* Animated gradient border */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.gradient-border-animated {
+  --angle: 0deg;
+  border: 2px solid transparent;
+  background: 
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    conic-gradient(from var(--angle), var(--accent-start), var(--accent-pink), var(--accent-secondary), var(--accent-start)) border-box;
+  animation: rotate-border 4s linear infinite;
+}
+
+@keyframes rotate-border {
+  to {
+    --angle: 360deg;
+  }
+}
+
+/* Cyan price highlight */
+.price-highlight {
+  color: var(--accent-secondary);
+  text-shadow: 0 0 30px rgba(34, 211, 238, 0.5);
+}
