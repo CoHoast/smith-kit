@@ -1,5 +1,5 @@
 {
-  "name": "@smithkit/commitbot",
+  "name": "@smithkit/cli",
   "version": "0.1.0",
   "description": "AI-powered commit message generator",
   "main": "dist/index.js",
