@@ -29,33 +29,60 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Repo not found' }, { status: 404 });
   }
 
-  // Format commits for AI
+  // Format commits for AI with author info
   const commitList = commits.map((c: { message: string; sha: string; author?: string }) => 
-    `- ${c.message} (${c.sha?.substring(0, 7)})`
+    `- ${c.message} (${c.sha?.substring(0, 7)})${c.author ? ` by @${c.author}` : ''}`
   ).join('\n');
 
+  // Extract unique contributors
+  const contributors = [...new Set(commits.map((c: { author?: string }) => c.author).filter(Boolean))];
+
   // Generate changelog with AI
-  const prompt = `You are a technical writer creating a changelog entry for a software release.
+  const prompt = `You are a technical writer creating a professional changelog entry for a software release.
 
 Repository: ${repo.github_repo_name}
 Version: ${version}
+Contributors: ${contributors.length > 0 ? contributors.map(c => `@${c}`).join(', ') : 'Unknown'}
+
 Commits since last release:
 ${commitList}
 
-Write a clear, concise changelog entry. Group changes into these categories (only include categories that have changes):
-- ✨ New Features
-- 🐛 Bug Fixes
-- ⚡ Improvements
-- 🔧 Maintenance
+Create a comprehensive changelog entry using these sections (ONLY include sections that have relevant changes):
+
+## ⚠️ Breaking Changes
+For any changes that break backward compatibility, require migration, or change existing behavior significantly.
+
+## 🔒 Security
+For security patches, vulnerability fixes, or security-related improvements.
+
+## ✨ New Features
+For new functionality, capabilities, or user-facing features.
+
+## ⚡ Improvements
+For enhancements to existing features, performance improvements, or UX improvements.
+
+## 🐛 Bug Fixes
+For bug fixes, error corrections, or issue resolutions.
+
+## 🔧 Maintenance
+For dependency updates, refactoring, documentation, or internal changes.
+
+## 📦 Deprecations
+For features or APIs being phased out (mention what to use instead).
 
 Rules:
-- Use plain language that users can understand
-- Be specific about what changed and why it matters
-- Don't include commit hashes or author names
-- Keep each item to 1-2 sentences
-- If a commit is a merge commit or trivial (typo fix, formatting), you can skip it
+- Write in clear, user-friendly language (not developer jargon)
+- Be specific about what changed and why it matters to users
+- Each item should be 1-2 sentences max
+- Skip trivial commits (typo fixes, merge commits, formatting)
+- If a section would be empty, omit it entirely
+- Start each item with a verb (Added, Fixed, Improved, Updated, etc.)
 
-Output format: Markdown`;
+At the end, add:
+---
+**Contributors:** ${contributors.length > 0 ? contributors.map(c => `@${c}`).join(', ') : 'Team'}
+
+Output format: Clean Markdown`;
 
   try {
     // Call Anthropic API
