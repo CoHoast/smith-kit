@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { ChangelogContent } from '@/components/ChangelogContent';
 
 interface PageProps {
   params: Promise<{ owner: string; repo: string }>;
@@ -133,11 +134,7 @@ export default async function PublicChangelogPage({ params }: PageProps) {
                 )}
 
                 {/* Content */}
-                <div className="prose prose-invert prose-sm max-w-none">
-                  <div className="text-[#a1a1b5] whitespace-pre-wrap leading-relaxed">
-                    {log.content}
-                  </div>
-                </div>
+                <ChangelogContent content={log.content} />
 
                 {/* Divider */}
                 <div className="mt-12 border-b border-[#1e1e2e]" />

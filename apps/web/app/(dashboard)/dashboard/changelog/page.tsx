@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/client';
 import { useState, useEffect } from 'react';
+import { ChangelogContent } from '@/components/ChangelogContent';
 
 interface ConnectedRepo {
   id: string;
@@ -382,10 +383,8 @@ export default function ChangelogPage() {
                             </button>
                           </div>
                         </div>
-                        {log.title && <h4 className="font-medium text-white mb-2">{log.title}</h4>}
-                        <div className="prose prose-invert prose-sm max-w-none">
-                          <p className="text-[#a1a1b5] text-sm whitespace-pre-wrap">{log.content}</p>
-                        </div>
+                        {log.title && <h4 className="font-medium text-white mb-4">{log.title}</h4>}
+                        <ChangelogContent content={log.content} />
                       </div>
                     ))}
                   </div>
