@@ -1,0 +1,105 @@
+{
+  "name": "smithkit-commitbot",
+  "displayName": "SmithKit CommitBot",
+  "description": "AI-powered commit message generator for VS Code",
+  "version": "1.0.0",
+  "publisher": "smithkit",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "SCM Providers"
+  ],
+  "keywords": [
+    "git",
+    "commit",
+    "ai",
+    "conventional-commits",
+    "commitbot"
+  ],
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#0a0a0f",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onCommand:commitbot.generate",
+    "onCommand:commitbot.generateAndCommit"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "commitbot.generate",
+        "title": "CommitBot: Generate Commit Message",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "commitbot.generateAndCommit",
+        "title": "CommitBot: Generate & Commit",
+        "icon": "$(git-commit)"
+      },
+      {
+        "command": "commitbot.setApiKey",
+        "title": "CommitBot: Set API Key"
+      }
+    ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "commitbot.generate",
+          "group": "navigation",
+          "when": "scmProvider == git"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "SmithKit CommitBot",
+      "properties": {
+        "commitbot.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Your SmithKit API key (get one at smithkit.ai)"
+        },
+        "commitbot.style": {
+          "type": "string",
+          "enum": ["conventional", "simple"],
+          "default": "conventional",
+          "description": "Commit message style"
+        },
+        "commitbot.includeScope": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include scope in conventional commits (e.g., feat(auth):)"
+        },
+        "commitbot.includeBody": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include detailed body in commit message"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.22.0",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CoHoast/smith-kit"
+  },
+  "homepage": "https://smithkit.ai",
+  "bugs": {
+    "url": "https://github.com/CoHoast/smith-kit/issues"
+  }
+}

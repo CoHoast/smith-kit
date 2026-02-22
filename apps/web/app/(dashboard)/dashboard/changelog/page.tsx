@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/client';
 import { useState, useEffect } from 'react';
 import { ChangelogContent } from '@/components/ChangelogContent';
+import BrandingModal from '@/components/BrandingModal';
 
 interface ConnectedRepo {
   id: string;
@@ -43,6 +44,7 @@ export default function ChangelogPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; type: 'success' | 'error'; message: string }>({ show: false, type: 'success', message: '' });
   const [expandedLogs, setExpandedLogs] = useState<Set<string>>(new Set());
+  const [showBrandingModal, setShowBrandingModal] = useState(false);
   const supabase = createClient();
 
   const toggleLog = (id: string) => {
@@ -359,15 +361,27 @@ export default function ChangelogPage() {
                           /changelog/{selectedRepo.github_repo_name}
                         </a>
                       </div>
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(`${window.location.origin}/changelog/${selectedRepo.github_repo_name}`);
-                          showToast('success', 'Link copied to clipboard!');
-                        }}
-                        className="text-xs text-[#6366f1] hover:text-white transition-colors"
-                      >
-                        Copy Link
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setShowBrandingModal(true)}
+                          className="text-xs text-[#a1a1b5] hover:text-white transition-colors flex items-center gap-1"
+                        >
+                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                          </svg>
+                          Customize
+                        </button>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(`${window.location.origin}/changelog/${selectedRepo.github_repo_name}`);
+                            showToast('success', 'Link copied to clipboard!');
+                          }}
+                          className="text-xs text-[#6366f1] hover:text-white transition-colors"
+                        >
+                          Copy Link
+                        </button>
+                      </div>
                     </div>
 
                     {changelogs.map((log, index) => {
@@ -556,6 +570,28 @@ export default function ChangelogPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Branding Modal */}
+      {selectedRepo && (
+        <BrandingModal
+          isOpen={showBrandingModal}
+          onClose={() => setShowBrandingModal(false)}
+          repoId={selectedRepo.id}
+          onSave={async (settings) => {
+            // Save branding settings to database
+            const { error } = await supabase
+              .from('changelog_repos')
+              .update({ branding: settings })
+              .eq('id', selectedRepo.id);
+            
+            if (error) {
+              showToast('error', 'Failed to save branding settings');
+            } else {
+              showToast('success', 'Branding settings saved!');
+            }
+          }}
+        />
       )}
     </div>
   );
