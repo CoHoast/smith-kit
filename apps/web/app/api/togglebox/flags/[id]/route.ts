@@ -1,6 +1,25 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
+// Helper to verify flag ownership
+async function verifyFlagOwnership(supabase: Awaited<ReturnType<typeof createClient>>, flagId: string, userId: string) {
+  const { data: flag } = await supabase
+    .from('togglebox_flags')
+    .select('id, project_id')
+    .eq('id', flagId)
+    .single();
+
+  if (!flag) return false;
+
+  const { data: project } = await supabase
+    .from('togglebox_projects')
+    .select('user_id')
+    .eq('id', flag.project_id)
+    .single();
+
+  return project?.user_id === userId;
+}
+
 // PATCH /api/togglebox/flags/[id] - Update flag (toggle, rename, etc.)
 export async function PATCH(
   request: Request,
@@ -17,17 +36,9 @@ export async function PATCH(
   const body = await request.json();
   const { name, description, enabled } = body;
 
-  // Verify flag ownership through project
-  const { data: existingFlag } = await supabase
-    .from('togglebox_flags')
-    .select(`
-      id,
-      togglebox_projects!inner(user_id)
-    `)
-    .eq('id', id)
-    .single();
-
-  if (!existingFlag || (existingFlag.togglebox_projects as { user_id: string }).user_id !== user.id) {
+  // Verify flag ownership
+  const isOwner = await verifyFlagOwnership(supabase, id, user.id);
+  if (!isOwner) {
     return NextResponse.json({ error: 'Flag not found' }, { status: 404 });
   }
 
@@ -71,17 +82,9 @@ export async function DELETE(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Verify flag ownership through project
-  const { data: existingFlag } = await supabase
-    .from('togglebox_flags')
-    .select(`
-      id,
-      togglebox_projects!inner(user_id)
-    `)
-    .eq('id', id)
-    .single();
-
-  if (!existingFlag || (existingFlag.togglebox_projects as { user_id: string }).user_id !== user.id) {
+  // Verify flag ownership
+  const isOwner = await verifyFlagOwnership(supabase, id, user.id);
+  if (!isOwner) {
     return NextResponse.json({ error: 'Flag not found' }, { status: 404 });
   }
 
