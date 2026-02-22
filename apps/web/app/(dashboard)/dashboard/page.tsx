@@ -105,7 +105,7 @@ export default async function DashboardPage() {
 
             {/* Content */}
             <h3 className="text-lg font-bold text-white mb-1">{tool.name}</h3>
-            <p className="text-sm text-[#71717a] mb-4">{tool.description}</p>
+            <p className="text-sm text-[#71717a] mb-4 line-clamp-2 min-h-[2.5rem]">{tool.description}</p>
 
             {/* Stat */}
             <div className="flex items-center justify-between pt-4 border-t border-[#1e1e2e]">

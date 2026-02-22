@@ -1,7 +1,7 @@
-import { createClient } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
+'use client';
+
 import Link from 'next/link';
-import SidebarNav from '@/components/SidebarNav';
+import { usePathname } from 'next/navigation';
 
 // Icons
 function HammerIcon({ className = "w-5 h-5" }: { className?: string }) {
@@ -50,85 +50,46 @@ function SettingsIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
-function LogOutIcon({ className = "w-5 h-5" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-      <polyline points="16 17 21 12 16 7" />
-      <line x1="21" y1="12" x2="9" y2="12" />
-    </svg>
-  );
-}
-
 const navItems = [
-  { name: 'Dashboard', href: '/dashboard', icon: HammerIcon },
+  { name: 'Dashboard', href: '/dashboard', icon: HammerIcon, exact: true },
   { name: 'Changelog', href: '/dashboard/changelog', icon: ScrollIcon },
   { name: 'Uptime', href: '/dashboard/uptime', icon: ActivityIcon },
   { name: 'CommitBot', href: '/dashboard/commitbot', icon: GitCommitIcon },
   { name: 'Settings', href: '/dashboard/settings', icon: SettingsIcon },
 ];
 
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+export default function SidebarNav() {
+  const pathname = usePathname();
 
-  if (!user) {
-    redirect('/login');
-  }
-
-  // Get user profile
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
+  const isActive = (item: typeof navItems[0]) => {
+    if (item.exact) {
+      return pathname === item.href;
+    }
+    return pathname.startsWith(item.href);
+  };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-[#0f0f17] border-r border-[#1e1e2e] flex flex-col">
-        {/* Logo */}
-        <div className="p-6 border-b border-[#1e1e2e]">
-          <Link href="/dashboard" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6366f1] to-[#8b5cf6] flex items-center justify-center">
-              <HammerIcon className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-bold text-lg text-white">SmithKit</span>
-          </Link>
-        </div>
-
-        {/* Navigation */}
-        <SidebarNav />
-
-        {/* User */}
-        <div className="p-4 border-t border-[#1e1e2e]">
-          <div className="flex items-center gap-3 px-4 py-3">
-            <div className="w-8 h-8 rounded-full bg-[#6366f1] flex items-center justify-center text-white text-sm font-medium">
-              {profile?.name?.[0] || user.email?.[0]?.toUpperCase() || '?'}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">
-                {profile?.name || user.email}
-              </p>
-              <p className="text-xs text-[#6b6b80] truncate">Free plan</p>
-            </div>
-            <form action="/api/auth/signout" method="post">
-              <button type="submit" className="text-[#6b6b80] hover:text-white transition-colors">
-                <LogOutIcon className="w-4 h-4" />
-              </button>
-            </form>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main content */}
-      <main className="flex-1 overflow-auto">
-        {children}
-      </main>
-    </div>
+    <nav className="flex-1 p-4">
+      <ul className="space-y-1">
+        {navItems.map((item) => {
+          const active = isActive(item);
+          return (
+            <li key={item.name}>
+              <Link
+                href={item.href}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                  active
+                    ? 'bg-[#6366f1]/10 text-white border-l-2 border-[#6366f1] ml-[-2px]'
+                    : 'text-[#a1a1b5] hover:text-white hover:bg-[#1a1a25]'
+                }`}
+              >
+                <item.icon className={`w-5 h-5 ${active ? 'text-[#6366f1]' : ''}`} />
+                <span className={active ? 'font-medium' : ''}>{item.name}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 }

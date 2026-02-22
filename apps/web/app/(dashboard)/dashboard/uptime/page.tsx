@@ -11,6 +11,10 @@ interface Monitor {
   last_checked_at: string | null;
   interval_seconds: number;
   is_active: boolean;
+  response_time_ms?: number;
+  uptime_percentage?: number;
+  checks_up?: number;
+  checks_total?: number;
 }
 
 export default function UptimePage() {
@@ -51,13 +55,50 @@ export default function UptimePage() {
       setUsername(profile.github_username);
     }
 
-    const { data } = await supabase
+    const { data: monitorsData } = await supabase
       .from('uptime_monitors')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
     
-    setMonitors(data || []);
+    // Fetch uptime stats for each monitor
+    if (monitorsData) {
+      const monitorsWithStats = await Promise.all(
+        monitorsData.map(async (monitor) => {
+          // Get checks from last 30 days
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          
+          const { data: checks } = await supabase
+            .from('uptime_checks')
+            .select('status, response_time_ms')
+            .eq('monitor_id', monitor.id)
+            .gte('checked_at', thirtyDaysAgo.toISOString())
+            .order('checked_at', { ascending: false });
+          
+          const checksUp = checks?.filter(c => c.status === 'up').length || 0;
+          const checksTotal = checks?.length || 0;
+          const uptimePercentage = checksTotal > 0 ? (checksUp / checksTotal) * 100 : 100;
+          
+          // Get latest response time
+          const latestCheck = checks?.find(c => c.response_time_ms);
+          const avgResponseTime = checks?.length 
+            ? Math.round(checks.filter(c => c.response_time_ms).reduce((sum, c) => sum + (c.response_time_ms || 0), 0) / checks.filter(c => c.response_time_ms).length)
+            : null;
+          
+          return {
+            ...monitor,
+            response_time_ms: latestCheck?.response_time_ms || avgResponseTime,
+            uptime_percentage: uptimePercentage,
+            checks_up: checksUp,
+            checks_total: checksTotal,
+          };
+        })
+      );
+      setMonitors(monitorsWithStats);
+    } else {
+      setMonitors([]);
+    }
     setIsLoading(false);
   };
 
@@ -244,8 +285,26 @@ export default function UptimePage() {
                 </div>
 
                 <div className="flex items-center gap-6">
+                  {/* Uptime % */}
+                  <div className="text-center px-3">
+                    <p className="text-lg font-bold text-white">
+                      {monitor.uptime_percentage?.toFixed(1) || '100.0'}%
+                    </p>
+                    <p className="text-xs text-[#6b6b80]">uptime</p>
+                  </div>
+
+                  {/* Response Time */}
+                  {monitor.response_time_ms && (
+                    <div className="text-center px-3 border-l border-[#1e1e2e]">
+                      <p className="text-lg font-bold text-white">
+                        {monitor.response_time_ms}ms
+                      </p>
+                      <p className="text-xs text-[#6b6b80]">response</p>
+                    </div>
+                  )}
+
                   {/* Status */}
-                  <div className="text-right">
+                  <div className="text-right border-l border-[#1e1e2e] pl-4">
                     <p className={`font-medium ${
                       monitor.current_status === 'up' ? 'text-green-500' :
                       monitor.current_status === 'down' ? 'text-red-500' :
@@ -256,8 +315,8 @@ export default function UptimePage() {
                     </p>
                     <p className="text-xs text-[#6b6b80]">
                       {monitor.last_checked_at
-                        ? `Last checked ${new Date(monitor.last_checked_at).toLocaleTimeString()}`
-                        : 'Waiting for first check'}
+                        ? `${new Date(monitor.last_checked_at).toLocaleTimeString()}`
+                        : 'Checking...'}
                     </p>
                   </div>
 
@@ -274,17 +333,22 @@ export default function UptimePage() {
                 </div>
               </div>
 
-              {/* Uptime bar (placeholder) */}
+              {/* Uptime bar */}
               <div className="mt-4 pt-4 border-t border-[#1e1e2e]">
                 <div className="flex items-center justify-between text-xs text-[#6b6b80] mb-2">
                   <span>Last 30 days</span>
-                  <span>100% uptime</span>
+                  <span>{monitor.uptime_percentage?.toFixed(2) || '100.00'}% uptime</span>
                 </div>
                 <div className="flex gap-0.5">
                   {Array.from({ length: 30 }).map((_, i) => (
                     <div
                       key={i}
-                      className="flex-1 h-6 rounded-sm bg-green-500/20"
+                      className={`flex-1 h-6 rounded-sm ${
+                        monitor.current_status === 'up' ? 'bg-green-500/30 hover:bg-green-500/50' :
+                        monitor.current_status === 'down' ? 'bg-red-500/30 hover:bg-red-500/50' :
+                        'bg-yellow-500/30 hover:bg-yellow-500/50'
+                      } transition-colors cursor-default`}
+                      title={`Day ${30 - i}`}
                     />
                   ))}
                 </div>
