@@ -41,6 +41,15 @@ function GitCommitIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
+function ToggleIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="1" y="5" width="22" height="14" rx="7" ry="7" />
+      <circle cx="16" cy="12" r="3" />
+    </svg>
+  );
+}
+
 function SettingsIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -55,6 +64,7 @@ const navItems = [
   { name: 'Changelog', href: '/dashboard/changelog', icon: ScrollIcon },
   { name: 'Uptime', href: '/dashboard/uptime', icon: ActivityIcon },
   { name: 'CommitBot', href: '/dashboard/commitbot', icon: GitCommitIcon },
+  { name: 'ToggleBox', href: '/dashboard/togglebox', icon: ToggleIcon },
   { name: 'Settings', href: '/dashboard/settings', icon: SettingsIcon },
 ];
 
