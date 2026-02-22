@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+import { sendEmail, getDowntimeAlertEmail, getUptimeRecoveryEmail } from '@/lib/email';
 
 // POST /api/uptime/check - Run checks for all active monitors (called by cron)
 export async function POST(request: Request) {
@@ -44,6 +45,7 @@ export async function POST(request: Request) {
 async function runCheck(
   monitor: {
     id: string;
+    name: string;
     url: string;
     method: string;
     timeout_seconds: number;
@@ -103,7 +105,15 @@ async function runCheck(
           status: 'ongoing',
           cause: 'status_code',
         });
-      } else if (newStatus === 'up') {
+      } else if (newStatus === 'up' && monitor.current_status === 'down') {
+        // Get the incident to calculate downtime
+        const { data: incident } = await supabase
+          .from('uptime_incidents')
+          .select('started_at')
+          .eq('monitor_id', monitor.id)
+          .eq('status', 'ongoing')
+          .single();
+        
         // Resolve any ongoing incidents
         await supabase
           .from('uptime_incidents')
@@ -113,6 +123,30 @@ async function runCheck(
           })
           .eq('monitor_id', monitor.id)
           .eq('status', 'ongoing');
+        
+        // Send recovery notification
+        try {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('email')
+            .eq('id', monitor.user_id)
+            .single();
+          
+          if (profile?.email) {
+            const downDuration = incident?.started_at 
+              ? formatDuration(new Date(incident.started_at), new Date())
+              : 'unknown duration';
+            
+            const { subject, html } = getUptimeRecoveryEmail(
+              monitor.name,
+              monitor.url,
+              downDuration
+            );
+            await sendEmail({ to: profile.email, subject, html });
+          }
+        } catch (emailError) {
+          console.error('Failed to send recovery alert:', emailError);
+        }
       }
     }
 
@@ -141,7 +175,26 @@ async function runCheck(
         cause: isTimeout ? 'timeout' : 'connection_error',
       });
       
-      // TODO: Send alert notification
+      // Send alert notification
+      try {
+        // Get user email
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('email')
+          .eq('id', monitor.user_id)
+          .single();
+        
+        if (profile?.email) {
+          const { subject, html } = getDowntimeAlertEmail(
+            monitor.name,
+            monitor.url,
+            new Date()
+          );
+          await sendEmail({ to: profile.email, subject, html });
+        }
+      } catch (emailError) {
+        console.error('Failed to send downtime alert:', emailError);
+      }
     }
 
     // Update monitor status
@@ -160,4 +213,18 @@ async function runCheck(
 // Also support GET for easy testing
 export async function GET(request: Request) {
   return POST(request);
+}
+
+// Helper function to format duration
+function formatDuration(start: Date, end: Date): string {
+  const ms = end.getTime() - start.getTime();
+  const seconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (days > 0) return `${days}d ${hours % 24}h`;
+  if (hours > 0) return `${hours}h ${minutes % 60}m`;
+  if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+  return `${seconds}s`;
 }
