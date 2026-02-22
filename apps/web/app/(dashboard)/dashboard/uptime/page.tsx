@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/client';
 import { useState, useEffect } from 'react';
+import Sparkline from '@/components/Sparkline';
 
 interface Monitor {
   id: string;
@@ -15,6 +16,9 @@ interface Monitor {
   uptime_percentage?: number;
   checks_up?: number;
   checks_total?: number;
+  response_history?: number[];
+  ssl_expiry?: string | null;
+  ssl_days_left?: number | null;
 }
 
 export default function UptimePage() {
@@ -25,7 +29,29 @@ export default function UptimePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [sslInfo, setSslInfo] = useState<Record<string, { daysLeft?: number; valid?: boolean; error?: string }>>({});
   const supabase = createClient();
+
+  // Check SSL certificates after monitors load
+  useEffect(() => {
+    if (monitors.length > 0) {
+      monitors.forEach(async (monitor) => {
+        if (monitor.url.startsWith('https://') && !sslInfo[monitor.id]) {
+          try {
+            const res = await fetch('/api/uptime/ssl', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ url: monitor.url }),
+            });
+            const data = await res.json();
+            setSslInfo(prev => ({ ...prev, [monitor.id]: data }));
+          } catch {
+            setSslInfo(prev => ({ ...prev, [monitor.id]: { error: 'Failed to check' } }));
+          }
+        }
+      });
+    }
+  }, [monitors]);
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -86,12 +112,20 @@ export default function UptimePage() {
             ? Math.round(checks.filter(c => c.response_time_ms).reduce((sum, c) => sum + (c.response_time_ms || 0), 0) / checks.filter(c => c.response_time_ms).length)
             : null;
           
+          // Get response time history for sparkline (last 24 checks)
+          const responseHistory = checks
+            ?.filter(c => c.response_time_ms)
+            .slice(0, 24)
+            .map(c => c.response_time_ms!)
+            .reverse() || [];
+          
           return {
             ...monitor,
             response_time_ms: latestCheck?.response_time_ms || avgResponseTime,
             uptime_percentage: uptimePercentage,
             checks_up: checksUp,
             checks_total: checksTotal,
+            response_history: responseHistory,
           };
         })
       );
@@ -293,15 +327,25 @@ export default function UptimePage() {
                     <p className="text-xs text-[#6b6b80]">uptime</p>
                   </div>
 
-                  {/* Response Time */}
-                  {monitor.response_time_ms && (
-                    <div className="text-center px-3 border-l border-[#1e1e2e]">
+                  {/* Response Time with Sparkline */}
+                  <div className="flex items-center gap-4 px-3 border-l border-[#1e1e2e]">
+                    <div className="text-center">
                       <p className="text-lg font-bold text-white">
-                        {monitor.response_time_ms}ms
+                        {monitor.response_time_ms || '—'}ms
                       </p>
                       <p className="text-xs text-[#6b6b80]">response</p>
                     </div>
-                  )}
+                    {monitor.response_history && monitor.response_history.length > 2 && (
+                      <div className="hidden sm:block">
+                        <Sparkline 
+                          data={monitor.response_history} 
+                          width={100} 
+                          height={28}
+                          color={monitor.current_status === 'up' ? '#22c55e' : '#ef4444'}
+                        />
+                      </div>
+                    )}
+                  </div>
 
                   {/* Status */}
                   <div className="text-right border-l border-[#1e1e2e] pl-4">
@@ -333,11 +377,37 @@ export default function UptimePage() {
                 </div>
               </div>
 
-              {/* Uptime bar */}
+              {/* SSL & Uptime bar */}
               <div className="mt-4 pt-4 border-t border-[#1e1e2e]">
+                <div className="flex items-center justify-between mb-3">
+                  {/* SSL Certificate Status */}
+                  {monitor.url.startsWith('https://') && (
+                    <div className="flex items-center gap-2">
+                      <svg className="w-4 h-4 text-[#6b6b80]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                      {sslInfo[monitor.id] ? (
+                        sslInfo[monitor.id].daysLeft !== undefined ? (
+                          <span className={`text-xs ${
+                            sslInfo[monitor.id].daysLeft! > 30 ? 'text-green-500' :
+                            sslInfo[monitor.id].daysLeft! > 14 ? 'text-yellow-500' :
+                            'text-red-500'
+                          }`}>
+                            SSL: {sslInfo[monitor.id].daysLeft} days left
+                          </span>
+                        ) : (
+                          <span className="text-xs text-red-500">SSL: {sslInfo[monitor.id].error || 'Invalid'}</span>
+                        )
+                      ) : (
+                        <span className="text-xs text-[#6b6b80]">Checking SSL...</span>
+                      )}
+                    </div>
+                  )}
+                  <span className="text-xs text-[#6b6b80]">{monitor.uptime_percentage?.toFixed(2) || '100.00'}% uptime</span>
+                </div>
                 <div className="flex items-center justify-between text-xs text-[#6b6b80] mb-2">
                   <span>Last 30 days</span>
-                  <span>{monitor.uptime_percentage?.toFixed(2) || '100.00'}% uptime</span>
                 </div>
                 <div className="flex gap-0.5">
                   {Array.from({ length: 30 }).map((_, i) => (
