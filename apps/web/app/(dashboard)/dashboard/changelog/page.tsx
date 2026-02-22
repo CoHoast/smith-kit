@@ -422,9 +422,12 @@ export default function ChangelogPage() {
                             <div className={`px-4 pb-4 ${isFirst && !isExpanded ? 'max-h-64 overflow-hidden relative' : ''}`}>
                               <ChangelogContent content={log.content} />
                               {isFirst && !isExpanded && (
-                                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0a0a0f] to-transparent flex items-end justify-center pb-4">
-                                  <span className="text-sm text-[#6366f1]">Click to expand</span>
-                                </div>
+                                <button 
+                                  onClick={() => toggleLog(log.id)}
+                                  className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0a0a0f] to-transparent flex items-end justify-center pb-4 cursor-pointer hover:from-[#0f0f17] transition-colors"
+                                >
+                                  <span className="text-sm text-[#6366f1] hover:text-[#818cf8] transition-colors">Click to expand ↓</span>
+                                </button>
                               )}
                             </div>
                           )}
