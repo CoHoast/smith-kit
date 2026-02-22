@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import https from 'https';
 import { TLSSocket } from 'tls';
 
+// Force Node.js runtime for this route (uses native https/tls modules)
+export const runtime = 'nodejs';
+
 export async function POST(request: Request) {
   try {
     const { url } = await request.json();

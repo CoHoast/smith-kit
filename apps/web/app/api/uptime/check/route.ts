@@ -2,6 +2,9 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import { sendEmail, getDowntimeAlertEmail, getUptimeRecoveryEmail } from '@/lib/email';
 
+// Force Node.js runtime for this route
+export const runtime = 'nodejs';
+
 // POST /api/uptime/check - Run checks for all active monitors (called by cron)
 export async function POST(request: Request) {
   // Verify cron secret (optional but recommended)
