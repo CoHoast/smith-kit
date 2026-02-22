@@ -27,6 +27,7 @@ interface Changelog {
   title: string;
   content: string;
   release_date: string;
+  is_published: boolean;
 }
 
 export default function ChangelogPage() {
@@ -327,13 +328,59 @@ export default function ChangelogPage() {
                   </div>
                 ) : (
                   <div className="space-y-4">
+                    {/* Public Page Link */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-[#6366f1]/5 border border-[#6366f1]/20">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-[#6366f1]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="2" y1="12" x2="22" y2="12" />
+                          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg>
+                        <span className="text-sm text-[#a1a1b5]">Public page:</span>
+                        <a
+                          href={`/changelog/${selectedRepo.github_repo_name}`}
+                          target="_blank"
+                          className="text-sm text-[#6366f1] hover:underline"
+                        >
+                          /changelog/{selectedRepo.github_repo_name}
+                        </a>
+                      </div>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${window.location.origin}/changelog/${selectedRepo.github_repo_name}`);
+                          showToast('success', 'Link copied to clipboard!');
+                        }}
+                        className="text-xs text-[#6366f1] hover:text-white transition-colors"
+                      >
+                        Copy Link
+                      </button>
+                    </div>
+
                     {changelogs.map((log) => (
-                      <div key={log.id} className="p-4 rounded-xl bg-[#0a0a0f] border border-[#1e1e2e]">
+                      <div key={log.id} className="p-4 rounded-xl bg-[#0a0a0f] border border-[#1e1e2e] group">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-mono text-sm text-[#6366f1]">{log.version}</span>
-                          <span className="text-xs text-[#6b6b80]">
-                            {new Date(log.release_date).toLocaleDateString()}
-                          </span>
+                          <div className="flex items-center gap-3">
+                            <span className="font-mono text-sm text-[#6366f1]">{log.version}</span>
+                            <span className="text-xs text-[#6b6b80]">
+                              {new Date(log.release_date).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Share button */}
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(`${window.location.origin}/changelog/${selectedRepo.github_repo_name}#${log.version}`);
+                                showToast('success', 'Release link copied!');
+                              }}
+                              className="opacity-0 group-hover:opacity-100 p-1.5 text-[#6b6b80] hover:text-white transition-all"
+                              title="Copy link to this release"
+                            >
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                              </svg>
+                            </button>
+                          </div>
                         </div>
                         {log.title && <h4 className="font-medium text-white mb-2">{log.title}</h4>}
                         <div className="prose prose-invert prose-sm max-w-none">
