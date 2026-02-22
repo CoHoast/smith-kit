@@ -206,6 +206,84 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      {/* Notifications */}
+      <div className="mb-8 p-6 rounded-2xl bg-[#12121a] border border-[#1e1e2e]">
+        <h2 className="text-lg font-bold text-white mb-4">Notifications</h2>
+        
+        <div className="space-y-4">
+          {/* Uptime Alerts */}
+          <div className="p-4 rounded-xl bg-[#0a0a0f]">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-medium text-white">Uptime Alerts</p>
+                  <p className="text-xs text-[#6b6b80]">Get notified when sites go down or SSL expires</p>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-3 pl-11">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" defaultChecked className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">Email alerts for downtime</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">Email alerts for SSL expiry (14 days before)</span>
+              </label>
+              <div className="pt-2">
+                <label className="block text-xs text-[#6b6b80] mb-1">Slack Webhook URL</label>
+                <input
+                  type="url"
+                  placeholder="https://hooks.slack.com/services/..."
+                  className="w-full px-3 py-2 rounded-lg bg-[#12121a] border border-[#27272a] text-white placeholder-[#6b6b80] text-sm focus:border-[#6366f1] focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Changelog Notifications */}
+          <div className="p-4 rounded-xl bg-[#0a0a0f]">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4" />
+                    <path d="M19 17V5a2 2 0 0 0-2-2H4" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-medium text-white">Changelog Notifications</p>
+                  <p className="text-xs text-[#6b6b80]">Notify users when you publish new releases</p>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-3 pl-11">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">Email subscribers on new release</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">Post to Slack on new release</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">Post to Discord on new release</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button className="mt-4 px-4 py-2 rounded-xl bg-[#6366f1] text-white text-sm font-medium hover:bg-[#5558e3] transition-colors">
+          Save Notification Settings
+        </button>
+      </div>
+
       {/* Danger Zone */}
       <div className="p-6 rounded-2xl bg-[#12121a] border border-red-500/20">
         <h2 className="text-lg font-bold text-red-500 mb-4">Danger Zone</h2>
