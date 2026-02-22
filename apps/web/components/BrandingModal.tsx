@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 interface BrandingSettings {
   logo_url: string;
@@ -35,6 +36,49 @@ export default function BrandingModal({
 }: BrandingModalProps) {
   const [settings, setSettings] = useState<BrandingSettings>(initialSettings || defaultSettings);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const supabase = createClient();
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      alert('File size must be less than 2MB');
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${repoId}-${Date.now()}.${fileExt}`;
+      const filePath = `changelog-logos/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('public')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('public')
+        .getPublicUrl(filePath);
+
+      setSettings({ ...settings, logo_url: publicUrl });
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('Failed to upload logo. Try using a URL instead.');
+    }
+    setIsUploading(false);
+  };
 
   if (!isOpen) return null;
 
@@ -58,17 +102,45 @@ export default function BrandingModal({
         </div>
 
         <div className="p-6 space-y-6 overflow-y-auto max-h-[60vh]">
-          {/* Logo URL */}
+          {/* Logo */}
           <div>
-            <label className="block text-sm font-medium text-[#a1a1b5] mb-2">Logo URL</label>
-            <input
-              type="url"
-              value={settings.logo_url}
-              onChange={(e) => setSettings({ ...settings, logo_url: e.target.value })}
-              placeholder="https://example.com/logo.png"
-              className="w-full px-4 py-3 rounded-xl bg-[#0a0a0f] border border-[#27272a] text-white placeholder-[#6b6b80] focus:border-[#6366f1] focus:outline-none"
-            />
-            <p className="text-xs text-[#6b6b80] mt-1">Displayed at the top of your changelog</p>
+            <label className="block text-sm font-medium text-[#a1a1b5] mb-2">Logo</label>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="url"
+                value={settings.logo_url}
+                onChange={(e) => setSettings({ ...settings, logo_url: e.target.value })}
+                placeholder="https://example.com/logo.png"
+                className="flex-1 px-4 py-3 rounded-xl bg-[#0a0a0f] border border-[#27272a] text-white placeholder-[#6b6b80] focus:border-[#6366f1] focus:outline-none"
+              />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleLogoUpload}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+                className="px-4 py-3 rounded-xl bg-[#1a1a25] border border-[#27272a] text-[#a1a1b5] hover:text-white hover:border-[#3a3a4a] transition-colors disabled:opacity-50"
+              >
+                {isUploading ? (
+                  <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+                    <path d="M12 2a10 10 0 0 1 10 10" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                )}
+              </button>
+            </div>
+            <p className="text-xs text-[#6b6b80]">Paste URL or upload an image (max 2MB)</p>
           </div>
 
           {/* Colors */}
