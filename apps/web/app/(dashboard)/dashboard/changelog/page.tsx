@@ -38,6 +38,7 @@ export default function ChangelogPage() {
   const [showRepoModal, setShowRepoModal] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [needsReauth, setNeedsReauth] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
@@ -123,6 +124,47 @@ export default function ChangelogPage() {
       .order('release_date', { ascending: false });
     
     setChangelogs(data || []);
+  };
+
+  const generateChangelog = async () => {
+    if (!selectedRepo) return;
+    setIsGenerating(true);
+
+    try {
+      // Fetch recent commits from GitHub
+      const commitsRes = await fetch(`/api/github/commits?repo=${selectedRepo.github_repo_name}`);
+      const commitsData = await commitsRes.json();
+      
+      if (!commitsData.commits || commitsData.commits.length === 0) {
+        alert('No commits found in this repository');
+        setIsGenerating(false);
+        return;
+      }
+
+      // Generate changelog with AI
+      const generateRes = await fetch('/api/changelog/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          repo_id: selectedRepo.id,
+          version: `v${new Date().toISOString().split('T')[0].replace(/-/g, '.')}`,
+          commits: commitsData.commits.slice(0, 20), // Last 20 commits
+        }),
+      });
+
+      const result = await generateRes.json();
+      
+      if (generateRes.ok) {
+        alert(result.ai_generated ? 'Changelog generated with AI!' : 'Changelog generated!');
+        loadChangelogs(selectedRepo.id);
+      } else {
+        alert(result.error || 'Failed to generate changelog');
+      }
+    } catch (error) {
+      console.error('Failed to generate changelog:', error);
+      alert('Failed to generate changelog');
+    }
+    setIsGenerating(false);
   };
 
   if (isLoading && !showRepoModal) {
@@ -247,11 +289,34 @@ export default function ChangelogPage() {
                   </a>
                 </div>
 
+                {/* Generate Button */}
+                <div className="mb-6">
+                  <button
+                    onClick={generateChangelog}
+                    disabled={isGenerating}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                        Generating with AI...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M12 3v18M3 12h18" />
+                        </svg>
+                        Generate Changelog
+                      </>
+                    )}
+                  </button>
+                </div>
+
                 {changelogs.length === 0 ? (
                   <div className="text-center py-12">
                     <p className="text-[#6b6b80]">No changelogs generated yet.</p>
                     <p className="text-sm text-[#52525b] mt-1">
-                      Changelogs are generated automatically when you create a release.
+                      Click &quot;Generate Changelog&quot; to create one from recent commits.
                     </p>
                   </div>
                 ) : (
