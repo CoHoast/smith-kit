@@ -19,7 +19,15 @@ export default function UptimePage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newMonitor, setNewMonitor] = useState({ name: '', url: '' });
   const [isSaving, setIsSaving] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
   const supabase = createClient();
+
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(label);
+    setTimeout(() => setCopied(null), 2000);
+  };
 
   useEffect(() => {
     loadMonitors();
@@ -31,6 +39,17 @@ export default function UptimePage() {
   const loadMonitors = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
+
+    // Get username for status page
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('github_username')
+      .eq('id', user.id)
+      .single();
+    
+    if (profile?.github_username) {
+      setUsername(profile.github_username);
+    }
 
     const { data } = await supabase
       .from('uptime_monitors')
@@ -150,7 +169,63 @@ export default function UptimePage() {
           </button>
         </div>
       ) : (
-        /* Monitors Grid */
+        <>
+        {/* Status Page & Badge Section */}
+        {username && monitors.length > 0 && (
+          <div className="mb-6 p-4 rounded-2xl bg-[#12121a] border border-[#1e1e2e]">
+            <div className="grid md:grid-cols-2 gap-4">
+              {/* Public Status Page */}
+              <div>
+                <p className="text-sm text-[#6b6b80] mb-2">Public Status Page</p>
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 px-3 py-2 rounded-lg bg-[#0a0a0f] text-sm text-[#a1a1b5] truncate">
+                    {typeof window !== 'undefined' ? window.location.origin : ''}/status/{username}
+                  </code>
+                  <button
+                    onClick={() => copyToClipboard(`${window.location.origin}/status/${username}`, 'status')}
+                    className="px-3 py-2 rounded-lg bg-[#1a1a25] text-[#6b6b80] hover:text-white text-sm transition-colors"
+                  >
+                    {copied === 'status' ? '✓' : 'Copy'}
+                  </button>
+                  <a
+                    href={`/status/${username}`}
+                    target="_blank"
+                    className="px-3 py-2 rounded-lg bg-[#6366f1] text-white text-sm hover:bg-[#5558e3] transition-colors"
+                  >
+                    View
+                  </a>
+                </div>
+              </div>
+              
+              {/* Badge Embed */}
+              <div>
+                <p className="text-sm text-[#6b6b80] mb-2">Uptime Badge</p>
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 px-3 py-2 rounded-lg bg-[#0a0a0f] text-sm text-[#a1a1b5] truncate">
+                    ![Uptime]({typeof window !== 'undefined' ? window.location.origin : ''}/api/badge/{username})
+                  </code>
+                  <button
+                    onClick={() => copyToClipboard(`![Uptime](${window.location.origin}/api/badge/${username})`, 'badge')}
+                    className="px-3 py-2 rounded-lg bg-[#1a1a25] text-[#6b6b80] hover:text-white text-sm transition-colors"
+                  >
+                    {copied === 'badge' ? '✓' : 'Copy'}
+                  </button>
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="text-xs text-[#6b6b80]">Preview:</span>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src={`/api/badge/${username}`} 
+                    alt="Uptime badge" 
+                    className="h-5"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Monitors Grid */}
         <div className="space-y-4">
           {monitors.map((monitor) => (
             <div
@@ -217,6 +292,7 @@ export default function UptimePage() {
             </div>
           ))}
         </div>
+        </>
       )}
 
       {/* Add Monitor Modal */}

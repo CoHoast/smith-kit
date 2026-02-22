@@ -32,6 +32,12 @@ export default function CommitBotPage() {
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [usageThisMonth, setUsageThisMonth] = useState(0);
+  const [commitHistory, setCommitHistory] = useState<Array<{
+    id: string;
+    repo_name: string | null;
+    generated_message: string;
+    created_at: string;
+  }>>([]);
   const supabase = createClient();
 
   useEffect(() => {
@@ -74,6 +80,15 @@ export default function CommitBotPage() {
       .gte('period_start', startOfMonth.toISOString().split('T')[0])
       .single();
     setUsageThisMonth(usageData?.count || 0);
+
+    // Load commit history
+    const { data: commits } = await supabase
+      .from('commitbot_commits')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(20);
+    setCommitHistory(commits || []);
 
     setIsLoading(false);
   };
@@ -285,6 +300,40 @@ export default function CommitBotPage() {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Commit History */}
+      <div className="p-6 rounded-2xl bg-[#12121a] border border-[#1e1e2e]">
+        <h2 className="text-lg font-bold text-white mb-4">Recent Commits</h2>
+        
+        {commitHistory.length === 0 ? (
+          <p className="text-[#6b6b80] text-center py-8">
+            No commits generated yet. Use the CLI or API to generate commit messages.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {commitHistory.map((commit) => (
+              <div key={commit.id} className="p-4 rounded-xl bg-[#0a0a0f] border border-[#1e1e2e]">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-mono text-sm text-white break-words">{commit.generated_message}</p>
+                    {commit.repo_name && (
+                      <p className="text-xs text-[#6b6b80] mt-1">{commit.repo_name}</p>
+                    )}
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-xs text-[#6b6b80]">
+                      {new Date(commit.created_at).toLocaleDateString()}
+                    </p>
+                    <p className="text-xs text-[#52525b]">
+                      {new Date(commit.created_at).toLocaleTimeString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* API Key Modal */}
