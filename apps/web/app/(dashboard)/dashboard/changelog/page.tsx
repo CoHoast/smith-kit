@@ -39,7 +39,13 @@ export default function ChangelogPage() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [needsReauth, setNeedsReauth] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [toast, setToast] = useState<{ show: boolean; type: 'success' | 'error'; message: string }>({ show: false, type: 'success', message: '' });
   const supabase = createClient();
+
+  const showToast = (type: 'success' | 'error', message: string) => {
+    setToast({ show: true, type, message });
+    setTimeout(() => setToast({ show: false, type: 'success', message: '' }), 4000);
+  };
 
   useEffect(() => {
     loadData();
@@ -155,14 +161,14 @@ export default function ChangelogPage() {
       const result = await generateRes.json();
       
       if (generateRes.ok) {
-        alert(result.ai_generated ? 'Changelog generated with AI!' : 'Changelog generated!');
+        showToast('success', result.ai_generated ? '✨ Changelog generated with AI!' : '✨ Changelog generated!');
         loadChangelogs(selectedRepo.id);
       } else {
-        alert(result.error || 'Failed to generate changelog');
+        showToast('error', result.error || 'Failed to generate changelog');
       }
     } catch (error) {
       console.error('Failed to generate changelog:', error);
-      alert('Failed to generate changelog');
+      showToast('error', 'Failed to generate changelog');
     }
     setIsGenerating(false);
   };
@@ -413,6 +419,47 @@ export default function ChangelogPage() {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Toast */}
+      {toast.show && (
+        <div className="fixed inset-0 flex items-center justify-center z-[100] pointer-events-none">
+          <div className={`pointer-events-auto px-6 py-4 rounded-2xl shadow-2xl border backdrop-blur-sm transform transition-all duration-300 ${
+            toast.type === 'success' 
+              ? 'bg-[#12121a]/95 border-green-500/30' 
+              : 'bg-[#12121a]/95 border-red-500/30'
+          }`}>
+            <div className="flex items-center gap-4">
+              {toast.type === 'success' ? (
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </div>
+              ) : (
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </div>
+              )}
+              <div>
+                <p className="font-bold text-white text-lg">{toast.type === 'success' ? 'Success!' : 'Error'}</p>
+                <p className="text-[#a1a1b5]">{toast.message}</p>
+              </div>
+              <button
+                onClick={() => setToast({ ...toast, show: false })}
+                className="ml-4 text-[#6b6b80] hover:text-white transition-colors"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
