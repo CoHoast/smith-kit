@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
-import type { Database } from '@/lib/supabase/types';
 
 // POST /api/uptime/check - Run checks for all active monitors (called by cron)
 export async function POST(request: Request) {
@@ -13,7 +12,7 @@ export async function POST(request: Request) {
   }
 
   // Use service role client for cron jobs
-  const supabase = createClient<Database>(
+  const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
@@ -52,7 +51,8 @@ async function runCheck(
     current_status: string;
     user_id: string;
   },
-  supabase: ReturnType<typeof createClient<Database>>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any
 ) {
   const startTime = Date.now();
   
@@ -71,7 +71,7 @@ async function runCheck(
     clearTimeout(timeout);
 
     const responseTime = Date.now() - startTime;
-    const newStatus = response.status === monitor.expected_status ? 'up' : 'degraded';
+    const newStatus: 'up' | 'degraded' | 'down' = response.status === monitor.expected_status ? 'up' : 'degraded';
 
     // Save check result
     await supabase.from('uptime_checks').insert({
@@ -96,16 +96,14 @@ async function runCheck(
 
     // Handle incident creation/resolution
     if (statusChanged) {
-      if (newStatus === 'down' || newStatus === 'degraded') {
-        // Create incident
+      if (newStatus === 'degraded') {
+        // Create incident for degraded status
         await supabase.from('uptime_incidents').insert({
           monitor_id: monitor.id,
           status: 'ongoing',
-          cause: newStatus === 'degraded' ? 'status_code' : 'timeout',
+          cause: 'status_code',
         });
-        
-        // TODO: Send alert notification
-      } else if (newStatus === 'up' && (monitor.current_status === 'down' || monitor.current_status === 'degraded')) {
+      } else if (newStatus === 'up') {
         // Resolve any ongoing incidents
         await supabase
           .from('uptime_incidents')
@@ -115,8 +113,6 @@ async function runCheck(
           })
           .eq('monitor_id', monitor.id)
           .eq('status', 'ongoing');
-          
-        // TODO: Send recovery notification
       }
     }
 

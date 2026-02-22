@@ -65,7 +65,7 @@ export default function CommitBotPage() {
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
     
-    const { data: usage } = await supabase
+    const { data: usageData } = await supabase
       .from('usage')
       .select('count')
       .eq('user_id', user.id)
@@ -73,7 +73,7 @@ export default function CommitBotPage() {
       .eq('metric', 'commits')
       .gte('period_start', startOfMonth.toISOString().split('T')[0])
       .single();
-    setUsageThisMonth(usage?.count || 0);
+    setUsageThisMonth(usageData?.count || 0);
 
     setIsLoading(false);
   };
