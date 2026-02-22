@@ -115,7 +115,7 @@ export default async function DashboardPage() {
   // Get recent activity
   const { data: recentChangelogs } = await supabase
     .from('changelogs')
-    .select('id, version, title, created_at, changelog_repos(github_repo_name)')
+    .select('id, version, title, created_at, repo_id')
     .order('created_at', { ascending: false })
     .limit(3);
 
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
       id: c.id,
       type: 'changelog' as const,
       title: `Generated changelog ${c.version || ''}`,
-      subtitle: (c.changelog_repos as { github_repo_name: string } | null)?.github_repo_name || 'Unknown repo',
+      subtitle: 'Changelog',
       time: new Date(c.created_at),
     })),
     ...(recentCommits || []).map((c) => ({
