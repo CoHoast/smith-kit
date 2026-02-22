@@ -19,12 +19,26 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Missing repo parameter' }, { status: 400 });
   }
 
-  // Get GitHub token
+  // Get GitHub token from session or stored profile
   const { data: { session } } = await supabase.auth.getSession();
-  const providerToken = session?.provider_token;
+  let providerToken = session?.provider_token;
+
+  // If not in session, try to get from stored profile
+  if (!providerToken) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('github_access_token')
+      .eq('id', user.id)
+      .single();
+    
+    providerToken = profile?.github_access_token;
+  }
 
   if (!providerToken) {
-    return NextResponse.json({ error: 'GitHub token not found' }, { status: 401 });
+    return NextResponse.json({ 
+      error: 'GitHub token not found. Please re-authenticate.',
+      needsReauth: true 
+    }, { status: 401 });
   }
 
   try {

@@ -12,7 +12,18 @@ export async function GET() {
 
   // Get the user's GitHub access token from the session
   const { data: { session } } = await supabase.auth.getSession();
-  const providerToken = session?.provider_token;
+  let providerToken = session?.provider_token;
+
+  // If not in session, try to get from stored profile
+  if (!providerToken) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('github_access_token')
+      .eq('id', user.id)
+      .single();
+    
+    providerToken = profile?.github_access_token;
+  }
 
   if (!providerToken) {
     return NextResponse.json({ 
