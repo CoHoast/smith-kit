@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     .eq('user_id', user.id)
     .single();
 
-  const limits: Record<string, number> = { free: 3, pro: 50, team: 200 };
+  const limits: Record<string, number> = { free: 3, pro: 50, premium: 200 };
   const plan = subscription?.plan || 'free';
   const limit = limits[plan] || 3;
 

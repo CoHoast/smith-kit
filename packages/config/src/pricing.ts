@@ -48,13 +48,13 @@ export const PLANS: Record<string, PlanConfig> = {
       '1 custom domain',
     ],
   },
-  team: {
-    id: 'team',
-    name: 'Team',
+  premium: {
+    id: 'premium',
+    name: 'Premium',
     price: 99,
     description: 'For growing teams',
     cta: 'Start Free Trial',
-    stripePriceId: process.env.STRIPE_TEAM_PRICE_ID,
+    stripePriceId: process.env.STRIPE_PREMIUM_PRICE_ID,
     features: [
       'All current + future tools',
       '50 repos (Changelog)',
@@ -85,7 +85,7 @@ export const LIMITS = {
     history_days: 30,
     custom_domains: 1,
   },
-  team: {
+  premium: {
     repos: 50,
     monitors: 200,
     commits_per_month: 2000,

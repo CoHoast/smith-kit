@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     .eq('user_id', userId)
     .single();
 
-  const limits: Record<string, number> = { free: 30, pro: 500, team: 2000 };
+  const limits: Record<string, number> = { free: 30, pro: 500, premium: 2000 };
   const plan = subscription?.plan || 'free';
   const limit = limits[plan] || 30;
   const currentUsage = usage?.count || 0;

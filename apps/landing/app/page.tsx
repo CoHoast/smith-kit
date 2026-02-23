@@ -373,12 +373,12 @@ export default function HomePage() {
             
             {/* Team */}
             <div className="p-8 rounded-2xl bg-zinc-900/80 border border-zinc-800">
-              <h3 className="text-xl font-semibold mb-1">{PRICING.team.name}</h3>
-              <p className="text-zinc-500 text-sm mb-4">{PRICING.team.description}</p>
-              <p className="text-4xl font-bold mb-6">${PRICING.team.price}<span className="text-lg text-zinc-500 font-normal">/mo</span></p>
+              <h3 className="text-xl font-semibold mb-1">{PRICING.premium.name}</h3>
+              <p className="text-zinc-500 text-sm mb-4">{PRICING.premium.description}</p>
+              <p className="text-4xl font-bold mb-6">${PRICING.premium.price}<span className="text-lg text-zinc-500 font-normal">/mo</span></p>
               
               <ul className="space-y-3 mb-8">
-                {PRICING.team.features.map((f) => (
+                {PRICING.premium.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-zinc-300">
                     <CheckIcon className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                     {f}
@@ -387,7 +387,7 @@ export default function HomePage() {
               </ul>
               
               <Link href="https://smith-kit-production.up.railway.app/login" className="block w-full py-3 rounded-xl border border-zinc-700 text-center font-medium hover:bg-zinc-800 transition-colors">
-                {PRICING.team.cta}
+                {PRICING.premium.cta}
               </Link>
             </div>
           </div>

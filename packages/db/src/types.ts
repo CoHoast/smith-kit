@@ -30,7 +30,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          plan: 'free' | 'pro' | 'team';
+          plan: 'free' | 'pro' | 'premium';
           status: 'active' | 'canceled' | 'past_due';
           stripe_customer_id: string | null;
           stripe_subscription_id: string | null;
@@ -41,13 +41,13 @@ export interface Database {
         };
         Insert: {
           user_id: string;
-          plan?: 'free' | 'pro' | 'team';
+          plan?: 'free' | 'pro' | 'premium';
           status?: 'active' | 'canceled' | 'past_due';
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
         };
         Update: {
-          plan?: 'free' | 'pro' | 'team';
+          plan?: 'free' | 'pro' | 'premium';
           status?: 'active' | 'canceled' | 'past_due';
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;

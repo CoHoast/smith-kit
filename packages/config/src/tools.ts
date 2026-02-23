@@ -57,7 +57,7 @@ export const TOOLS: ToolConfig[] = [
     limits: {
       free: { repos: 1, changelogs_per_month: 5 },
       pro: { repos: 10, changelogs_per_month: -1 },
-      team: { repos: 50, changelogs_per_month: -1 },
+      premium: { repos: 50, changelogs_per_month: -1 },
     },
   },
   {
@@ -84,7 +84,7 @@ export const TOOLS: ToolConfig[] = [
     limits: {
       free: { monitors: 3 },
       pro: { monitors: 50 },
-      team: { monitors: 200 },
+      premium: { monitors: 200 },
     },
   },
   {
@@ -111,7 +111,7 @@ export const TOOLS: ToolConfig[] = [
     limits: {
       free: { commits_per_month: 30 },
       pro: { commits_per_month: 500 },
-      team: { commits_per_month: 2000 },
+      premium: { commits_per_month: 2000 },
     },
   },
   {
@@ -137,7 +137,7 @@ export const TOOLS: ToolConfig[] = [
     limits: {
       free: { requests_per_day: 100 },
       pro: { requests_per_day: -1 },
-      team: { requests_per_day: -1 },
+      premium: { requests_per_day: -1 },
     },
   },
   {
@@ -163,7 +163,7 @@ export const TOOLS: ToolConfig[] = [
     limits: {
       free: { projects: 1, events_per_month: 5000 },
       pro: { projects: 10, events_per_month: 100000 },
-      team: { projects: -1, events_per_month: -1 },
+      premium: { projects: -1, events_per_month: -1 },
     },
   },
   {
@@ -189,7 +189,7 @@ export const TOOLS: ToolConfig[] = [
     limits: {
       free: { status_pages: 1, subscribers: 100 },
       pro: { status_pages: 5, subscribers: 1000 },
-      team: { status_pages: 20, subscribers: -1 },
+      premium: { status_pages: 20, subscribers: -1 },
     },
   },
   {
@@ -215,7 +215,7 @@ export const TOOLS: ToolConfig[] = [
     limits: {
       free: { flags: 5, evaluations_per_month: 10000 },
       pro: { flags: 100, evaluations_per_month: 1000000 },
-      team: { flags: -1, evaluations_per_month: -1 },
+      premium: { flags: -1, evaluations_per_month: -1 },
     },
   },
   {
@@ -241,7 +241,7 @@ export const TOOLS: ToolConfig[] = [
     limits: {
       free: { projects: 1, requests_per_month: 10000 },
       pro: { projects: 10, requests_per_month: 500000 },
-      team: { projects: -1, requests_per_month: -1 },
+      premium: { projects: -1, requests_per_month: -1 },
     },
   },
   {
@@ -267,7 +267,7 @@ export const TOOLS: ToolConfig[] = [
     limits: {
       free: { jobs: 5, runs_per_month: 100 },
       pro: { jobs: 50, runs_per_month: 5000 },
-      team: { jobs: -1, runs_per_month: -1 },
+      premium: { jobs: -1, runs_per_month: -1 },
     },
   },
 ];

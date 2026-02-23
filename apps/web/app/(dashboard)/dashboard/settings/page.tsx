@@ -12,7 +12,7 @@ interface Profile {
 }
 
 interface Subscription {
-  plan: 'free' | 'pro' | 'team';
+  plan: 'free' | 'pro' | 'premium';
   status: 'active' | 'canceled' | 'past_due';
   current_period_end: string | null;
 }
@@ -147,19 +147,26 @@ export default function SettingsPage() {
 
         {subscription?.plan === 'free' ? (
           <div className="space-y-4">
-            <div className="p-4 rounded-xl bg-gradient-to-r from-[#6366f1]/10 to-[#8b5cf6]/10 border border-[#6366f1]/20">
+            <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border border-purple-500/20">
               <h3 className="font-bold text-white mb-2">Upgrade to Pro</h3>
               <p className="text-sm text-[#a1a1b5] mb-4">
                 Get 10 repos, 50 monitors, 500 commits/month, and more.
               </p>
               <div className="flex items-center gap-4">
-                <button className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white font-medium text-sm hover:opacity-90 transition-opacity">
+                <a 
+                  href="mailto:support@smithkit.dev?subject=Upgrade%20to%20Pro%20Plan"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium text-sm hover:opacity-90 transition-opacity"
+                >
                   Upgrade for $39/mo
-                </button>
-                <button className="px-4 py-2 rounded-xl border border-[#6366f1]/30 text-[#6366f1] font-medium text-sm hover:bg-[#6366f1]/10 transition-colors">
-                  Team Plan $99/mo
-                </button>
+                </a>
+                <a 
+                  href="mailto:support@smithkit.dev?subject=Upgrade%20to%20Premium%20Plan"
+                  className="px-4 py-2 rounded-xl border border-purple-500/30 text-purple-400 font-medium text-sm hover:bg-purple-500/10 transition-colors"
+                >
+                  Premium $99/mo
+                </a>
               </div>
+              <p className="text-xs text-[#6b6b80] mt-3">Contact us to upgrade — Stripe checkout coming soon!</p>
             </div>
           </div>
         ) : (
