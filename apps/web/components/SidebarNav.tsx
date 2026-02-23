@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -133,55 +134,115 @@ function SettingsIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
-const navItems = [
-  { name: 'Dashboard', href: '/dashboard', icon: DashboardIcon, exact: true },
-  { name: 'Changelog', href: '/dashboard/changelog', icon: ScrollIcon },
-  { name: 'Uptime', href: '/dashboard/uptime', icon: ActivityIcon },
-  { name: 'CommitBot', href: '/dashboard/commitbot', icon: GitCommitIcon },
-  { name: 'ToggleBox', href: '/dashboard/togglebox', icon: ToggleIcon },
-  { name: 'StatusKit', href: '/dashboard/statuskit', icon: StatusIcon },
-  { name: 'EventLog', href: '/dashboard/eventlog', icon: EventLogIcon },
-  { name: 'CronPilot', href: '/dashboard/cron', icon: CronIcon },
-  { name: 'WebhookLab', href: '/dashboard/webhooks', icon: WebhookIcon },
-  { name: 'LLM Analytics', href: '/dashboard/llm', icon: LLMIcon },
-  { name: 'ErrorWatch', href: '/dashboard/errorwatch', icon: ErrorWatchIcon },
-  { name: 'VaultKit', href: '/dashboard/vault', icon: VaultIcon },
-  { name: 'DepWatch', href: '/dashboard/depwatch', icon: DepWatchIcon },
+type NavItem = {
+  name: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  exact?: boolean;
+};
+
+type NavSection = {
+  title: string;
+  items: NavItem[];
+};
+
+const navSections: NavSection[] = [
+  {
+    title: '',
+    items: [
+      { name: 'Dashboard', href: '/dashboard', icon: DashboardIcon, exact: true },
+    ],
+  },
+  {
+    title: 'Monitoring',
+    items: [
+      { name: 'Uptime', href: '/dashboard/uptime', icon: ActivityIcon },
+      { name: 'StatusKit', href: '/dashboard/statuskit', icon: StatusIcon },
+      { name: 'ErrorWatch', href: '/dashboard/errorwatch', icon: ErrorWatchIcon },
+    ],
+  },
+  {
+    title: 'Developer',
+    items: [
+      { name: 'Changelog', href: '/dashboard/changelog', icon: ScrollIcon },
+      { name: 'CommitBot', href: '/dashboard/commitbot', icon: GitCommitIcon },
+      { name: 'ToggleBox', href: '/dashboard/togglebox', icon: ToggleIcon },
+    ],
+  },
+  {
+    title: 'Automation',
+    items: [
+      { name: 'CronPilot', href: '/dashboard/cron', icon: CronIcon },
+      { name: 'WebhookLab', href: '/dashboard/webhooks', icon: WebhookIcon },
+      { name: 'EventLog', href: '/dashboard/eventlog', icon: EventLogIcon },
+    ],
+  },
+  {
+    title: 'AI & Security',
+    items: [
+      { name: 'LLM Analytics', href: '/dashboard/llm', icon: LLMIcon },
+      { name: 'VaultKit', href: '/dashboard/vault', icon: VaultIcon },
+      { name: 'DepWatch', href: '/dashboard/depwatch', icon: DepWatchIcon },
+    ],
+  },
+];
+
+const bottomItems: NavItem[] = [
   { name: 'Settings', href: '/dashboard/settings', icon: SettingsIcon },
 ];
 
 export default function SidebarNav() {
   const pathname = usePathname();
 
-  const isActive = (item: typeof navItems[0]) => {
+  const isActive = (item: NavItem) => {
     if (item.exact) {
       return pathname === item.href;
     }
     return pathname.startsWith(item.href);
   };
 
+  const renderNavItem = (item: NavItem) => {
+    const active = isActive(item);
+    return (
+      <li key={item.name}>
+        <Link
+          href={item.href}
+          className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 ${
+            active
+              ? 'bg-gradient-to-r from-purple-600/20 to-cyan-600/10 text-white border-l-2 border-purple-500'
+              : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
+          }`}
+        >
+          <item.icon className={`w-5 h-5 ${active ? 'text-purple-400' : ''}`} />
+          <span className={`text-sm ${active ? 'font-medium' : ''}`}>{item.name}</span>
+        </Link>
+      </li>
+    );
+  };
+
   return (
-    <nav className="flex-1 p-4 overflow-y-auto">
-      <ul className="space-y-1">
-        {navItems.map((item) => {
-          const active = isActive(item);
-          return (
-            <li key={item.name}>
-              <Link
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 ${
-                  active
-                    ? 'bg-gradient-to-r from-purple-600/20 to-cyan-600/10 text-white border-l-2 border-purple-500'
-                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
-                }`}
-              >
-                <item.icon className={`w-5 h-5 ${active ? 'text-purple-400' : ''}`} />
-                <span className={`text-sm ${active ? 'font-medium' : ''}`}>{item.name}</span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+    <nav className="flex-1 p-4 overflow-y-auto flex flex-col">
+      <div className="flex-1 space-y-6">
+        {navSections.map((section, idx) => (
+          <div key={idx}>
+            {section.title && (
+              <p className="px-4 mb-2 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                {section.title}
+              </p>
+            )}
+            <ul className="space-y-1">
+              {section.items.map(renderNavItem)}
+            </ul>
+          </div>
+        ))}
+      </div>
+      
+      {/* Bottom items (Settings) */}
+      <div className="pt-4 mt-4 border-t border-zinc-800">
+        <ul className="space-y-1">
+          {bottomItems.map(renderNavItem)}
+        </ul>
+      </div>
     </nav>
   );
 }
