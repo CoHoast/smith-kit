@@ -240,8 +240,8 @@ export const PRICING = {
       'Early access to new tools',
     ],
   },
-  team: {
-    name: 'Team',
+  premium: {
+    name: 'Premium',
     price: 99,
     description: 'For growing startups',
     cta: 'Start Free Trial',
