@@ -35,8 +35,8 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-[#09090b] flex">
-      {/* Sidebar */}
-      <aside className="w-72 bg-[#0c0c0f] border-r border-zinc-800/50 flex flex-col">
+      {/* Sidebar - Fixed/Sticky */}
+      <aside className="w-72 bg-[#0c0c0f] border-r border-zinc-800/50 flex flex-col fixed top-0 left-0 h-screen">
         {/* Logo */}
         <div className="p-6 border-b border-zinc-800/50">
           <Link href="/dashboard" className="flex items-center">
@@ -59,19 +59,30 @@ export default async function DashboardLayout({
               </p>
               <p className="text-xs text-zinc-500 truncate">Free plan</p>
             </div>
-            <form action="/api/auth/signout" method="post">
-              <button type="submit" className="text-zinc-500 hover:text-white transition-colors p-1">
-                <LogOutIcon className="w-4 h-4" />
-              </button>
-            </form>
           </div>
         </div>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 overflow-auto bg-[#09090b]">
-        {children}
-      </main>
+      {/* Main content - with left margin for sidebar */}
+      <div className="flex-1 ml-72">
+        {/* Top Header Bar */}
+        <header className="sticky top-0 z-10 h-16 bg-[#09090b]/80 backdrop-blur-xl border-b border-zinc-800/50 flex items-center justify-end px-8">
+          <form action="/api/auth/signout" method="post">
+            <button 
+              type="submit" 
+              className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-zinc-800/50"
+            >
+              <LogOutIcon className="w-4 h-4" />
+              Log out
+            </button>
+          </form>
+        </header>
+        
+        {/* Page content */}
+        <main className="overflow-auto">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }
