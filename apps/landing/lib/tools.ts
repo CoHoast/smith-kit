@@ -1,7 +1,7 @@
 /**
  * SMITHKIT TOOL REGISTRY
  * 
- * All 10 tools in one powerful suite.
+ * All 12 tools in one powerful suite.
  * One subscription. Zero compromise.
  */
 
@@ -200,6 +200,42 @@ export const TOOLS: Tool[] = [
       'Browser & Node.js SDKs',
     ],
   },
+  {
+    id: 'vaultkit',
+    name: 'VaultKit',
+    tagline: 'Secrets & env manager',
+    description: 'Stop sharing .env files in Slack. Encrypted secrets management with team access controls and audit logs.',
+    status: 'live',
+    icon: 'lock',
+    color: 'bg-gradient-to-br from-amber-500 to-orange-600',
+    gradient: 'from-amber-500 to-orange-600',
+    features: [
+      'AES-256 encryption',
+      'Team access controls',
+      'Environment management',
+      'Audit logs',
+      'CLI & SDK support',
+      'Secret rotation',
+    ],
+  },
+  {
+    id: 'depwatch',
+    name: 'DepWatch',
+    tagline: 'Dependency security scanner',
+    description: 'Know when your dependencies have vulnerabilities. Automatic scanning with fix suggestions.',
+    status: 'live',
+    icon: 'shield',
+    color: 'bg-gradient-to-br from-emerald-500 to-teal-600',
+    gradient: 'from-emerald-500 to-teal-600',
+    features: [
+      'Automatic vulnerability scanning',
+      'Severity ratings',
+      'Fix recommendations',
+      'GitHub integration',
+      'Slack alerts',
+      'License compliance',
+    ],
+  },
 ];
 
 // Helper functions
@@ -217,7 +253,7 @@ export const PRICING = {
     description: 'For side projects & testing',
     cta: 'Start Building',
     features: [
-      'All 10 tools included',
+      'All 12 tools included',
       '1 project per tool',
       'Basic usage limits',
       '7-day data retention',
@@ -231,7 +267,7 @@ export const PRICING = {
     cta: 'Start Free Trial',
     popular: true,
     features: [
-      'All 10 tools, unlimited',
+      'All 12 tools, unlimited',
       '10 projects per tool',
       'Higher API limits',
       '30-day data retention',
