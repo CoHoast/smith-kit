@@ -1,3 +1,4 @@
+import React from 'react';
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 
@@ -112,7 +113,7 @@ function ErrorIcon() {
   );
 }
 
-const toolIcons: Record<string, () => JSX.Element> = {
+const toolIcons: Record<string, () => React.ReactElement> = {
   changelog: ChangelogIcon,
   uptime: UptimeIcon,
   commitbot: CommitIcon,
