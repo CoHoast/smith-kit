@@ -141,11 +141,37 @@ export const TOOLS: ToolConfig[] = [
     },
   },
   {
+    id: 'statuskit',
+    name: 'StatusKit',
+    tagline: 'Public status pages',
+    description: 'Beautiful status pages with incident management. Keep your users informed when things go wrong.',
+    status: 'live',
+    icon: 'status',
+    color: 'tool-icon-status',
+    features: [
+      'Beautiful public status pages',
+      'Incident management & timeline',
+      'Subscriber notifications',
+      'Custom branding & domain',
+      'Automatic monitor integration',
+      'Historical incident log',
+    ],
+    routes: {
+      dashboard: '/dashboard/statuskit',
+      api: '/api/statuskit',
+    },
+    limits: {
+      free: { status_pages: 1, subscribers: 100 },
+      pro: { status_pages: 5, subscribers: 1000 },
+      team: { status_pages: 20, subscribers: -1 },
+    },
+  },
+  {
     id: 'flags',
     name: 'ToggleBox',
     tagline: 'Simple feature flags',
     description: 'LaunchDarkly costs $400/mo. ToggleBox costs a fraction. Simple feature flags for teams that build fast.',
-    status: 'soon',
+    status: 'live',
     icon: 'toggle',
     color: 'tool-icon-flags',
     features: [
