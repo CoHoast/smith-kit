@@ -85,6 +85,17 @@ function WebhookIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
+function LLMIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z" />
+      <path d="M12 12v10" />
+      <path d="M8 22h8" />
+      <path d="M7 8h10" />
+    </svg>
+  );
+}
+
 function SettingsIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -104,6 +115,7 @@ const navItems = [
   { name: 'EventLog', href: '/dashboard/eventlog', icon: EventLogIcon },
   { name: 'CronPilot', href: '/dashboard/cron', icon: CronIcon },
   { name: 'WebhookLab', href: '/dashboard/webhooks', icon: WebhookIcon },
+  { name: 'LLM Analytics', href: '/dashboard/llm', icon: LLMIcon },
   { name: 'Settings', href: '/dashboard/settings', icon: SettingsIcon },
 ];
 

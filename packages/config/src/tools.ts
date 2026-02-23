@@ -219,6 +219,32 @@ export const TOOLS: ToolConfig[] = [
     },
   },
   {
+    id: 'llm',
+    name: 'LLM Analytics',
+    tagline: 'Track AI/LLM usage',
+    description: 'Monitor your AI API usage, costs, and performance. Compare models, track tokens, and optimize spend.',
+    status: 'live',
+    icon: 'cpu',
+    color: 'tool-icon-llm',
+    features: [
+      'Track any LLM provider',
+      'Automatic cost calculation',
+      'Latency monitoring',
+      'Usage by model comparison',
+      'Daily/monthly reports',
+      'Per-user tracking',
+    ],
+    routes: {
+      dashboard: '/dashboard/llm',
+      api: '/api/llm',
+    },
+    limits: {
+      free: { projects: 1, requests_per_month: 10000 },
+      pro: { projects: 10, requests_per_month: 500000 },
+      team: { projects: -1, requests_per_month: -1 },
+    },
+  },
+  {
     id: 'cron',
     name: 'CronPilot',
     tagline: 'Background jobs made easy',
