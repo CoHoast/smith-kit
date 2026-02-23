@@ -235,8 +235,8 @@ export default async function DashboardPage() {
     <div className="p-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-        <p className="text-zinc-400">Welcome back. Here's what's happening across your tools.</p>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-purple-200 to-cyan-200 bg-clip-text text-transparent mb-2">Dashboard</h1>
+        <p className="text-zinc-400">Welcome back. Here&apos;s what&apos;s happening across your tools.</p>
       </div>
 
       {/* Plan Banner */}
@@ -260,36 +260,39 @@ export default async function DashboardPage() {
 
       {/* Live Stats from Tools */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-white mb-4">Live Stats</h2>
+        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 animate-pulse"></span>
+          Live Stats
+        </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800">
+          <div className="p-4 rounded-xl bg-zinc-900/80 border-l-4 border-l-emerald-500 border-t border-r border-b border-zinc-800">
             <p className="text-zinc-500 text-xs mb-1">Monitors</p>
             <p className="text-2xl font-bold text-white">{monitors?.length || 0}</p>
             {monitorsUp > 0 && <p className="text-xs text-emerald-400 mt-1">{monitorsUp} up</p>}
             {monitorsDown > 0 && <p className="text-xs text-red-400">{monitorsDown} down</p>}
           </div>
           
-          <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800">
+          <div className="p-4 rounded-xl bg-zinc-900/80 border-l-4 border-l-purple-500 border-t border-r border-b border-zinc-800">
             <p className="text-zinc-500 text-xs mb-1">Repos</p>
             <p className="text-2xl font-bold text-white">{repos?.length || 0}</p>
           </div>
           
-          <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800">
+          <div className="p-4 rounded-xl bg-zinc-900/80 border-l-4 border-l-orange-500 border-t border-r border-b border-zinc-800">
             <p className="text-zinc-500 text-xs mb-1">AI Commits</p>
             <p className="text-2xl font-bold text-white">{usage?.commitbot_count || 0}</p>
           </div>
           
-          <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800">
+          <div className="p-4 rounded-xl bg-zinc-900/80 border-l-4 border-l-cyan-500 border-t border-r border-b border-zinc-800">
             <p className="text-zinc-500 text-xs mb-1">Feature Flags</p>
             <p className="text-2xl font-bold text-white">{flagCount}</p>
           </div>
           
-          <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800">
+          <div className="p-4 rounded-xl bg-zinc-900/80 border-l-4 border-l-fuchsia-500 border-t border-r border-b border-zinc-800">
             <p className="text-zinc-500 text-xs mb-1">Events Tracked</p>
             <p className="text-2xl font-bold text-white">{eventCount}</p>
           </div>
           
-          <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800">
+          <div className="p-4 rounded-xl bg-zinc-900/80 border-l-4 border-l-red-500 border-t border-r border-b border-zinc-800">
             <p className="text-zinc-500 text-xs mb-1">Unresolved Errors</p>
             <p className={`text-2xl font-bold ${unresolvedErrors > 0 ? 'text-red-400' : 'text-white'}`}>{unresolvedErrors}</p>
           </div>
@@ -306,13 +309,17 @@ export default async function DashboardPage() {
               <Link
                 key={tool.id}
                 href={tool.href}
-                className="group p-5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-purple-500/30 transition-all hover:-translate-y-0.5"
+                className="group relative p-5 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-purple-500/50 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden"
               >
-                <GradientIcon>
-                  <IconComponent />
-                </GradientIcon>
-                <h3 className="font-semibold text-white text-sm mt-4 mb-1 group-hover:text-purple-400 transition-colors">{tool.name}</h3>
-                <p className="text-xs text-zinc-500">{tool.desc}</p>
+                {/* Gradient glow on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 to-cyan-600/0 group-hover:from-purple-600/5 group-hover:to-cyan-600/5 transition-all" />
+                <div className="relative">
+                  <GradientIcon>
+                    <IconComponent />
+                  </GradientIcon>
+                  <h3 className="font-semibold text-white text-sm mt-4 mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-cyan-400 transition-all">{tool.name}</h3>
+                  <p className="text-xs text-zinc-500">{tool.desc}</p>
+                </div>
               </Link>
             );
           })}
