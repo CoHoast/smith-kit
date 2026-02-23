@@ -38,14 +38,18 @@ export async function POST(request: NextRequest) {
   }
 
   // Find or create channel
-  let channelRecord = await supabase
+  let channelId: string | null = null;
+  
+  const { data: existingChannel } = await supabase
     .from('eventlog_channels')
     .select('id')
     .eq('project_id', project.id)
     .eq('name', channel)
     .single();
 
-  if (!channelRecord.data) {
+  if (existingChannel) {
+    channelId = existingChannel.id;
+  } else {
     const { data: newChannel } = await supabase
       .from('eventlog_channels')
       .insert({
@@ -54,7 +58,7 @@ export async function POST(request: NextRequest) {
       })
       .select('id')
       .single();
-    channelRecord = { data: newChannel, error: null };
+    channelId = newChannel?.id || null;
   }
 
   // Create event
@@ -62,7 +66,7 @@ export async function POST(request: NextRequest) {
     .from('eventlog_events')
     .insert({
       project_id: project.id,
-      channel_id: channelRecord.data?.id,
+      channel_id: channelId,
       channel_name: channel,
       event,
       description: description || null,
@@ -114,25 +118,29 @@ export async function GET(request: NextRequest) {
   }
 
   // Find or create channel
-  let channelRecord = await supabase
+  let channelIdGet: string | null = null;
+  
+  const { data: existingChannelGet } = await supabase
     .from('eventlog_channels')
     .select('id')
     .eq('project_id', project.id)
     .eq('name', channel)
     .single();
 
-  if (!channelRecord.data) {
-    const { data: newChannel } = await supabase
+  if (existingChannelGet) {
+    channelIdGet = existingChannelGet.id;
+  } else {
+    const { data: newChannelGet } = await supabase
       .from('eventlog_channels')
       .insert({ project_id: project.id, name: channel })
       .select('id')
       .single();
-    channelRecord = { data: newChannel, error: null };
+    channelIdGet = newChannelGet?.id || null;
   }
 
   await supabase.from('eventlog_events').insert({
     project_id: project.id,
-    channel_id: channelRecord.data?.id,
+    channel_id: channelIdGet,
     channel_name: channel,
     event,
     description: searchParams.get('description'),
