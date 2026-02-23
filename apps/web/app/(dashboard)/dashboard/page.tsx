@@ -265,8 +265,12 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-zinc-400 mb-1">Current Plan</p>
-            <p className="text-2xl font-bold text-white capitalize">{subscription?.plan || 'Free'}</p>
-            <p className="text-sm text-zinc-500 mt-1">All 10 tools included</p>
+            <p className="text-2xl font-bold text-white">
+              {subscription?.plan === 'team' ? 'Premium' : subscription?.plan === 'pro' ? 'Pro' : 'Free'}
+            </p>
+            <p className="text-sm text-zinc-500 mt-1">
+              {subscription?.plan === 'team' ? 'All 12 tools included' : subscription?.plan === 'pro' ? 'All 12 tools included' : 'Limited access'}
+            </p>
           </div>
           {(!subscription || subscription?.plan === 'free') && (
             <Link
