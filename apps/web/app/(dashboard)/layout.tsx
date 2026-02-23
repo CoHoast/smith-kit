@@ -45,7 +45,7 @@ export default async function DashboardLayout({
         </div>
 
         {/* Navigation */}
-        <SidebarNav />
+        <SidebarNav isAdmin={profile?.is_admin || false} />
 
         {/* User */}
         <div className="p-4 border-t border-zinc-800/50 mt-auto">
