@@ -3,13 +3,14 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-// Icons
-function HammerIcon({ className = "w-5 h-5" }: { className?: string }) {
+// Icons - all consistent style
+function DashboardIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M15 12l-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9" />
-      <path d="M17.64 15L22 10.64" />
-      <path d="m20.91 11.7-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A6.18 6.18 0 0 1 12 8.4v1.56l2 2h2.47l2.26 1.91" />
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <rect x="14" y="14" width="7" height="7" rx="1" />
     </svg>
   );
 }
@@ -53,7 +54,8 @@ function ToggleIcon({ className = "w-5 h-5" }: { className?: string }) {
 function StatusIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 6v6l4 2" />
     </svg>
   );
 }
@@ -88,10 +90,8 @@ function WebhookIcon({ className = "w-5 h-5" }: { className?: string }) {
 function LLMIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z" />
-      <path d="M12 12v10" />
-      <path d="M8 22h8" />
-      <path d="M7 8h10" />
+      <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z" />
+      <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z" />
     </svg>
   );
 }
@@ -116,7 +116,7 @@ function SettingsIcon({ className = "w-5 h-5" }: { className?: string }) {
 }
 
 const navItems = [
-  { name: 'Dashboard', href: '/dashboard', icon: HammerIcon, exact: true },
+  { name: 'Dashboard', href: '/dashboard', icon: DashboardIcon, exact: true },
   { name: 'Changelog', href: '/dashboard/changelog', icon: ScrollIcon },
   { name: 'Uptime', href: '/dashboard/uptime', icon: ActivityIcon },
   { name: 'CommitBot', href: '/dashboard/commitbot', icon: GitCommitIcon },
@@ -141,7 +141,7 @@ export default function SidebarNav() {
   };
 
   return (
-    <nav className="flex-1 p-4">
+    <nav className="flex-1 p-4 overflow-y-auto">
       <ul className="space-y-1">
         {navItems.map((item) => {
           const active = isActive(item);
@@ -149,14 +149,14 @@ export default function SidebarNav() {
             <li key={item.name}>
               <Link
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 ${
                   active
-                    ? 'bg-[#6366f1]/10 text-white border-l-2 border-[#6366f1] ml-[-2px]'
-                    : 'text-[#a1a1b5] hover:text-white hover:bg-[#1a1a25]'
+                    ? 'bg-gradient-to-r from-purple-600/20 to-cyan-600/10 text-white border-l-2 border-purple-500'
+                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
                 }`}
               >
-                <item.icon className={`w-5 h-5 ${active ? 'text-[#6366f1]' : ''}`} />
-                <span className={active ? 'font-medium' : ''}>{item.name}</span>
+                <item.icon className={`w-5 h-5 ${active ? 'text-purple-400' : ''}`} />
+                <span className={`text-sm ${active ? 'font-medium' : ''}`}>{item.name}</span>
               </Link>
             </li>
           );
