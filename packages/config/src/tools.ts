@@ -119,7 +119,7 @@ export const TOOLS: ToolConfig[] = [
     name: 'WebhookLab',
     tagline: 'Debug webhooks instantly',
     description: 'Inspect, debug, replay, and forward webhooks during development. Like Postman for webhooks.',
-    status: 'soon',
+    status: 'live',
     icon: 'webhook',
     color: 'tool-icon-webhooks',
     features: [
