@@ -97,18 +97,26 @@ export async function POST(request: NextRequest) {
   // Update daily stats (upsert)
   const today = new Date().toISOString().split('T')[0];
   
-  await supabase.rpc('upsert_llm_daily_stats', {
-    p_project_id: project.id,
-    p_date: today,
-    p_provider: provider,
-    p_model: model,
-    p_tokens: total_tokens || (prompt_tokens || 0) + (completion_tokens || 0),
-    p_cost: costCents || 0,
-    p_latency: latency_ms || 0,
-    p_is_error: status === 'error',
-  }).catch(() => {
-    // RPC might not exist yet, that's OK
-  });
+  // Update daily stats (best effort)
+  try {
+    await supabase
+      .from('llm_daily_stats')
+      .upsert({
+        project_id: project.id,
+        date: today,
+        provider,
+        model,
+        request_count: 1,
+        total_tokens: total_tokens || (prompt_tokens || 0) + (completion_tokens || 0),
+        total_cost_cents: costCents || 0,
+        avg_latency_ms: latency_ms || 0,
+        error_count: status === 'error' ? 1 : 0,
+      }, {
+        onConflict: 'project_id,date,provider,model',
+      });
+  } catch {
+    // Ignore stats errors
+  }
 
   return NextResponse.json({
     success: true,

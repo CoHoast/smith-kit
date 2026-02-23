@@ -141,14 +141,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to track error' }, { status: 500 });
   }
 
-  // Update daily stats
+  // Update daily stats (best effort, don't fail if this errors)
   const today = new Date().toISOString().split('T')[0];
-  await supabase.rpc('increment_errorwatch_daily_stats', {
-    p_project_id: project.id,
-    p_date: today,
-  }).catch(() => {
-    // If RPC doesn't exist, manually upsert
-    supabase
+  try {
+    await supabase
       .from('errorwatch_daily_stats')
       .upsert({
         project_id: project.id,
@@ -157,7 +153,9 @@ export async function POST(request: NextRequest) {
       }, {
         onConflict: 'project_id,date',
       });
-  });
+  } catch {
+    // Ignore stats errors
+  }
 
   return NextResponse.json({ 
     success: true, 
