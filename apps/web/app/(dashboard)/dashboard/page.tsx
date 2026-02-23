@@ -158,8 +158,10 @@ export default async function DashboardPage() {
 
   const { data: monitors } = await supabase
     .from('uptime_monitors')
-    .select('id, status')
-    .eq('user_id', user?.id);
+    .select('id, name, url, status, last_checked_at')
+    .eq('user_id', user?.id)
+    .order('created_at', { ascending: false })
+    .limit(5);
 
   const { data: usage } = await supabase
     .from('usage')
@@ -173,12 +175,21 @@ export default async function DashboardPage() {
     .eq('user_id', user?.id);
 
   let flagCount = 0;
+  let recentFlags: { id: string; name: string; key: string; enabled: boolean }[] = [];
   if (flagProjects && flagProjects.length > 0) {
     const { count } = await supabase
       .from('togglebox_flags')
       .select('*', { count: 'exact', head: true })
       .in('project_id', flagProjects.map(p => p.id));
     flagCount = count || 0;
+    
+    const { data: flags } = await supabase
+      .from('togglebox_flags')
+      .select('id, name, key, enabled')
+      .in('project_id', flagProjects.map(p => p.id))
+      .order('updated_at', { ascending: false })
+      .limit(5);
+    recentFlags = flags || [];
   }
 
   // EventLog stats
@@ -203,6 +214,7 @@ export default async function DashboardPage() {
     .eq('user_id', user?.id);
   
   let unresolvedErrors = 0;
+  let recentErrors: { id: string; title: string; count: number; last_seen_at: string }[] = [];
   if (errorwatchProjects && errorwatchProjects.length > 0) {
     const { count } = await supabase
       .from('errorwatch_issues')
@@ -210,6 +222,15 @@ export default async function DashboardPage() {
       .in('project_id', errorwatchProjects.map(p => p.id))
       .eq('status', 'unresolved');
     unresolvedErrors = count || 0;
+    
+    const { data: errors } = await supabase
+      .from('errorwatch_issues')
+      .select('id, title, count, last_seen_at')
+      .in('project_id', errorwatchProjects.map(p => p.id))
+      .eq('status', 'unresolved')
+      .order('last_seen_at', { ascending: false })
+      .limit(5);
+    recentErrors = errors || [];
   }
 
   // CronPilot stats
@@ -296,6 +317,111 @@ export default async function DashboardPage() {
             <p className="text-zinc-500 text-xs mb-1">Unresolved Errors</p>
             <p className={`text-2xl font-bold ${unresolvedErrors > 0 ? 'text-red-400' : 'text-white'}`}>{unresolvedErrors}</p>
           </div>
+        </div>
+      </div>
+
+      {/* Live Data Cards */}
+      <div className="mb-8 grid md:grid-cols-3 gap-6">
+        {/* Uptime Monitors */}
+        <div className="p-5 rounded-2xl bg-zinc-900/80 border border-zinc-800">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-white flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                <svg className="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
+                </svg>
+              </span>
+              Uptime Monitors
+            </h3>
+            <Link href="/dashboard/uptime" className="text-xs text-purple-400 hover:text-purple-300">View all →</Link>
+          </div>
+          {monitors && monitors.length > 0 ? (
+            <div className="space-y-2">
+              {monitors.slice(0, 4).map((monitor: { id: string; name: string; url: string; status: string; last_checked_at: string }) => (
+                <div key={monitor.id} className="flex items-center justify-between p-2 rounded-lg bg-zinc-800/50">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${monitor.status === 'up' ? 'bg-emerald-400' : 'bg-red-400'}`} />
+                    <span className="text-sm text-white truncate">{monitor.name}</span>
+                  </div>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${monitor.status === 'up' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
+                    {monitor.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-6">
+              <p className="text-zinc-500 text-sm">No monitors yet</p>
+              <Link href="/dashboard/uptime" className="text-xs text-purple-400 hover:text-purple-300 mt-1 inline-block">Add your first monitor →</Link>
+            </div>
+          )}
+        </div>
+
+        {/* Feature Flags */}
+        <div className="p-5 rounded-2xl bg-zinc-900/80 border border-zinc-800">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-white flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                <svg className="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="1" y="5" width="22" height="14" rx="7" ry="7" />
+                  <circle cx="16" cy="12" r="3" />
+                </svg>
+              </span>
+              Feature Flags
+            </h3>
+            <Link href="/dashboard/togglebox" className="text-xs text-purple-400 hover:text-purple-300">View all →</Link>
+          </div>
+          {recentFlags && recentFlags.length > 0 ? (
+            <div className="space-y-2">
+              {recentFlags.slice(0, 4).map((flag) => (
+                <div key={flag.id} className="flex items-center justify-between p-2 rounded-lg bg-zinc-800/50">
+                  <span className="text-sm text-white truncate">{flag.name || flag.key}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${flag.enabled ? 'bg-emerald-500/20 text-emerald-400' : 'bg-zinc-600/50 text-zinc-400'}`}>
+                    {flag.enabled ? 'ON' : 'OFF'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-6">
+              <p className="text-zinc-500 text-sm">No flags yet</p>
+              <Link href="/dashboard/togglebox" className="text-xs text-purple-400 hover:text-purple-300 mt-1 inline-block">Create your first flag →</Link>
+            </div>
+          )}
+        </div>
+
+        {/* Recent Errors */}
+        <div className="p-5 rounded-2xl bg-zinc-900/80 border border-zinc-800">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-white flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
+                <svg className="w-4 h-4 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </span>
+              Recent Errors
+            </h3>
+            <Link href="/dashboard/errorwatch" className="text-xs text-purple-400 hover:text-purple-300">View all →</Link>
+          </div>
+          {recentErrors && recentErrors.length > 0 ? (
+            <div className="space-y-2">
+              {recentErrors.slice(0, 4).map((error) => (
+                <div key={error.id} className="flex items-center justify-between p-2 rounded-lg bg-zinc-800/50">
+                  <span className="text-sm text-white truncate flex-1 mr-2">{error.title}</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 flex-shrink-0">
+                    {error.count}×
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-6">
+              <p className="text-zinc-500 text-sm">No errors — looking good! 🎉</p>
+              <Link href="/dashboard/errorwatch" className="text-xs text-purple-400 hover:text-purple-300 mt-1 inline-block">Set up error tracking →</Link>
+            </div>
+          )}
         </div>
       </div>
 
