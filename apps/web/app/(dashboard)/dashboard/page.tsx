@@ -113,6 +113,26 @@ function ErrorIcon() {
   );
 }
 
+function VaultIcon() {
+  return (
+    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="url(#grad)" strokeWidth="2">
+      <defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#a855f7"/><stop offset="100%" stopColor="#22d3ee"/></linearGradient></defs>
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  );
+}
+
+function DepWatchIcon() {
+  return (
+    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="url(#grad)" strokeWidth="2">
+      <defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#a855f7"/><stop offset="100%" stopColor="#22d3ee"/></linearGradient></defs>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  );
+}
+
 const toolIcons: Record<string, () => React.ReactElement> = {
   changelog: ChangelogIcon,
   uptime: UptimeIcon,
@@ -124,6 +144,8 @@ const toolIcons: Record<string, () => React.ReactElement> = {
   webhooks: WebhookIcon,
   llm: LLMIcon,
   errorwatch: ErrorIcon,
+  vault: VaultIcon,
+  depwatch: DepWatchIcon,
 };
 
 const tools = [
@@ -137,6 +159,8 @@ const tools = [
   { id: 'webhooks', name: 'WebhookLab', desc: 'Webhook debug', href: '/dashboard/webhooks' },
   { id: 'llm', name: 'LLM Analytics', desc: 'AI usage', href: '/dashboard/llm' },
   { id: 'errorwatch', name: 'ErrorWatch', desc: 'Error tracking', href: '/dashboard/errorwatch' },
+  { id: 'vault', name: 'VaultKit', desc: 'Secrets manager', href: '/dashboard/vault' },
+  { id: 'depwatch', name: 'DepWatch', desc: 'Dependency security', href: '/dashboard/depwatch' },
 ];
 
 export default async function DashboardPage() {
@@ -261,7 +285,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Plan Banner */}
-      <div className="mb-8 p-6 rounded-2xl bg-gradient-to-r from-purple-600/10 via-fuchsia-600/10 to-cyan-600/10 border border-purple-500/20">
+      <div className="mb-8 p-6 rounded-2xl bg-gradient-to-r from-purple-600/40 via-fuchsia-500/30 to-cyan-500/40 border border-purple-400/30">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-zinc-400 mb-1">Current Plan</p>
@@ -327,7 +351,7 @@ export default async function DashboardPage() {
       {/* Live Data Cards */}
       <div className="mb-8 grid md:grid-cols-3 gap-6">
         {/* Uptime Monitors */}
-        <div className="p-5 rounded-2xl bg-zinc-900/80 border border-zinc-800">
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-900/40 via-zinc-900/80 to-cyan-900/30 border border-purple-500/20">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-white flex items-center gap-2">
               <span className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
@@ -362,7 +386,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Feature Flags */}
-        <div className="p-5 rounded-2xl bg-zinc-900/80 border border-zinc-800">
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-cyan-900/40 via-zinc-900/80 to-purple-900/30 border border-cyan-500/20">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-white flex items-center gap-2">
               <span className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
@@ -395,7 +419,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Recent Errors */}
-        <div className="p-5 rounded-2xl bg-zinc-900/80 border border-zinc-800">
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-fuchsia-900/40 via-zinc-900/80 to-rose-900/30 border border-fuchsia-500/20">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-white flex items-center gap-2">
               <span className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">

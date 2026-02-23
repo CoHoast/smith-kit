@@ -66,7 +66,33 @@ export default async function DashboardLayout({
       {/* Main content - with left margin for sidebar */}
       <div className="flex-1 ml-72">
         {/* Top Header Bar */}
-        <header className="sticky top-0 z-10 h-16 bg-[#09090b]/80 backdrop-blur-xl border-b border-zinc-800/50 flex items-center justify-end px-8">
+        <header className="sticky top-0 z-10 h-16 bg-[#09090b]/80 backdrop-blur-xl border-b border-zinc-800/50 flex items-center justify-between px-8">
+          <nav className="flex items-center gap-6">
+            <a 
+              href="https://smithkitlanding-production.up.railway.app" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-zinc-400 hover:text-white transition-colors"
+            >
+              Home
+            </a>
+            <a 
+              href="https://smithkitlanding-production.up.railway.app/#pricing" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-zinc-400 hover:text-white transition-colors"
+            >
+              Pricing
+            </a>
+            <a 
+              href="https://smithkitlanding-production.up.railway.app/#features" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-zinc-400 hover:text-white transition-colors"
+            >
+              Features
+            </a>
+          </nav>
           <form action="/api/auth/signout" method="post">
             <button 
               type="submit" 
