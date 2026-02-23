@@ -66,6 +66,15 @@ function EventLogIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
+function CronIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  );
+}
+
 function SettingsIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -83,6 +92,7 @@ const navItems = [
   { name: 'ToggleBox', href: '/dashboard/togglebox', icon: ToggleIcon },
   { name: 'StatusKit', href: '/dashboard/statuskit', icon: StatusIcon },
   { name: 'EventLog', href: '/dashboard/eventlog', icon: EventLogIcon },
+  { name: 'CronPilot', href: '/dashboard/cron', icon: CronIcon },
   { name: 'Settings', href: '/dashboard/settings', icon: SettingsIcon },
 ];
 

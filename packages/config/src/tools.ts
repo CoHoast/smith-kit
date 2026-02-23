@@ -223,7 +223,7 @@ export const TOOLS: ToolConfig[] = [
     name: 'CronPilot',
     tagline: 'Background jobs made easy',
     description: 'Simple scheduled tasks. URL + schedule = done. No infrastructure, no complexity, just cron jobs that work.',
-    status: 'soon',
+    status: 'live',
     icon: 'clock',
     color: 'tool-icon-cron',
     features: [
