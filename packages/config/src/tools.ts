@@ -141,6 +141,32 @@ export const TOOLS: ToolConfig[] = [
     },
   },
   {
+    id: 'eventlog',
+    name: 'EventLog',
+    tagline: 'Real-time event tracking',
+    description: 'Track signups, purchases, errors, and more. Real-time dashboard with push notifications.',
+    status: 'live',
+    icon: 'zap',
+    color: 'tool-icon-eventlog',
+    features: [
+      'Track any event via API',
+      'Real-time event feed',
+      'Channel organization',
+      'User journey tracking',
+      'Push notifications',
+      'Webhook integrations',
+    ],
+    routes: {
+      dashboard: '/dashboard/eventlog',
+      api: '/api/eventlog',
+    },
+    limits: {
+      free: { projects: 1, events_per_month: 5000 },
+      pro: { projects: 10, events_per_month: 100000 },
+      team: { projects: -1, events_per_month: -1 },
+    },
+  },
+  {
     id: 'statuskit',
     name: 'StatusKit',
     tagline: 'Public status pages',
