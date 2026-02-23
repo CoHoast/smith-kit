@@ -39,11 +39,11 @@ async function generateCommitMessage(diff: string, apiKey: string): Promise<stri
   });
 
   if (!response.ok) {
-    const error = await response.json();
+    const error = await response.json() as { error?: string };
     throw new Error(error.error || 'Failed to generate commit message');
   }
 
-  const data = await response.json();
+  const data = await response.json() as { message: string };
   return data.message;
 }
 
