@@ -47,9 +47,9 @@ export default function Navigation() {
 
   return (
     <nav className="fixed top-0 w-full z-50 nav-blur">
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-xl gradient-btn flex items-center justify-center logo-glow">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-500/30">
             <HammerIcon className="w-5 h-5 text-white" />
           </div>
           <span className="font-bold text-xl">SmithKit</span>
@@ -57,16 +57,19 @@ export default function Navigation() {
         
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8">
-          <Link href="#tools" className="text-sm text-[#a1a1aa] hover:text-white transition-colors">Tools</Link>
-          <Link href="#pricing" className="text-sm text-[#a1a1aa] hover:text-white transition-colors">Pricing</Link>
-          <Link href="https://github.com/CoHoast/smith-kit" className="text-sm text-[#a1a1aa] hover:text-white transition-colors">Docs</Link>
+          <Link href="#tools" className="text-sm text-gray-400 hover:text-white transition-colors">Tools</Link>
+          <Link href="#pricing" className="text-sm text-gray-400 hover:text-white transition-colors">Pricing</Link>
+          <Link href="https://github.com/CoHoast/smith-kit" className="text-sm text-gray-400 hover:text-white transition-colors">Docs</Link>
         </div>
         
         <div className="hidden md:flex items-center gap-4">
-          <Link href={`${DASHBOARD_URL}/login`} className="text-sm text-[#a1a1aa] hover:text-white transition-colors">
+          <Link href={`${DASHBOARD_URL}/login`} className="text-sm text-gray-400 hover:text-white transition-colors">
             Log in
           </Link>
-          <Link href={`${DASHBOARD_URL}/login`} className="gradient-btn px-4 py-2 rounded-lg text-sm font-medium">
+          <Link 
+            href={`${DASHBOARD_URL}/login`} 
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-sm font-semibold hover:opacity-90 transition-opacity"
+          >
             <span className="flex items-center gap-2">
               <GitHubIcon className="w-4 h-4" />
               Get Started
@@ -77,7 +80,7 @@ export default function Navigation() {
         {/* Mobile menu button */}
         <button 
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 text-[#a1a1aa] hover:text-white transition-colors"
+          className="md:hidden p-2 text-gray-400 hover:text-white transition-colors"
           aria-label="Toggle menu"
         >
           {isOpen ? <CloseIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
@@ -86,46 +89,44 @@ export default function Navigation() {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-[#0a0a12]/98 backdrop-blur-xl border-b border-[#1e1e2e]">
+        <div className="md:hidden absolute top-16 left-0 right-0 bg-[#030305]/98 backdrop-blur-xl border-b border-white/10">
           <div className="px-6 py-6 space-y-4">
             <Link 
               href="#tools" 
               onClick={() => setIsOpen(false)}
-              className="block text-lg text-[#a1a1aa] hover:text-white transition-colors py-2"
+              className="block text-lg text-gray-400 hover:text-white transition-colors py-2"
             >
               Tools
             </Link>
             <Link 
               href="#pricing" 
               onClick={() => setIsOpen(false)}
-              className="block text-lg text-[#a1a1aa] hover:text-white transition-colors py-2"
+              className="block text-lg text-gray-400 hover:text-white transition-colors py-2"
             >
               Pricing
             </Link>
             <Link 
               href="https://github.com/CoHoast/smith-kit"
               onClick={() => setIsOpen(false)}
-              className="block text-lg text-[#a1a1aa] hover:text-white transition-colors py-2"
+              className="block text-lg text-gray-400 hover:text-white transition-colors py-2"
             >
               Docs
             </Link>
-            <div className="pt-4 border-t border-[#1e1e2e] space-y-4">
+            <div className="pt-4 border-t border-white/10 space-y-4">
               <Link 
                 href={`${DASHBOARD_URL}/login`}
                 onClick={() => setIsOpen(false)}
-                className="block text-lg text-[#a1a1aa] hover:text-white transition-colors py-2"
+                className="block text-lg text-gray-400 hover:text-white transition-colors py-2"
               >
                 Log in
               </Link>
               <Link 
                 href={`${DASHBOARD_URL}/login`}
                 onClick={() => setIsOpen(false)}
-                className="gradient-btn px-6 py-3 rounded-xl font-medium inline-flex items-center gap-2"
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 font-semibold inline-flex items-center gap-2"
               >
-                <span className="flex items-center gap-2">
-                  <GitHubIcon className="w-5 h-5" />
-                  Get Started
-                </span>
+                <GitHubIcon className="w-5 h-5" />
+                Get Started
               </Link>
             </div>
           </div>
