@@ -203,6 +203,219 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* TOOL SHOWCASE */}
+      <section className="py-24 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-950/10 to-transparent" />
+        
+        <div className="relative max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              See it in action
+            </h2>
+            <p className="text-zinc-400 text-lg max-w-xl mx-auto">
+              Powerful tools, beautiful interfaces
+            </p>
+          </div>
+          
+          {/* Tool Preview Grid */}
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Uptime Monitor */}
+            <div className="group">
+              <div className="rounded-2xl overflow-hidden border border-zinc-800 hover:border-purple-500/30 transition-all hover:shadow-xl hover:shadow-purple-500/5">
+                {/* Mini browser bar */}
+                <div className="bg-zinc-900 px-4 py-2.5 flex items-center gap-2 border-b border-zinc-800">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                  </div>
+                  <span className="text-xs text-zinc-500 ml-2">Uptime Monitoring</span>
+                </div>
+                {/* Mockup content */}
+                <div className="bg-zinc-950 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="font-medium text-white">Production API</p>
+                        <p className="text-xs text-emerald-400">Operational</p>
+                      </div>
+                    </div>
+                    <span className="text-2xl font-bold text-white">99.9%</span>
+                  </div>
+                  {/* Uptime bars mockup */}
+                  <div className="flex gap-1 mb-4">
+                    {Array.from({ length: 30 }).map((_, i) => (
+                      <div key={i} className={`flex-1 h-8 rounded-sm ${i === 12 ? 'bg-red-500/50' : 'bg-emerald-500/30'}`} />
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="p-3 rounded-lg bg-zinc-900/50">
+                      <p className="text-xs text-zinc-500">Response</p>
+                      <p className="text-lg font-semibold text-white">142ms</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-zinc-900/50">
+                      <p className="text-xs text-zinc-500">Uptime</p>
+                      <p className="text-lg font-semibold text-emerald-400">99.9%</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-zinc-900/50">
+                      <p className="text-xs text-zinc-500">Checks</p>
+                      <p className="text-lg font-semibold text-white">43.2k</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="mt-4 text-center text-sm text-zinc-400">Monitor uptime with multi-region checks</p>
+            </div>
+
+            {/* Feature Flags */}
+            <div className="group">
+              <div className="rounded-2xl overflow-hidden border border-zinc-800 hover:border-purple-500/30 transition-all hover:shadow-xl hover:shadow-purple-500/5">
+                <div className="bg-zinc-900 px-4 py-2.5 flex items-center gap-2 border-b border-zinc-800">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                  </div>
+                  <span className="text-xs text-zinc-500">Feature Flags</span>
+                </div>
+                <div className="bg-zinc-950 p-6">
+                  <div className="space-y-3">
+                    {[
+                      { name: 'new_checkout', label: 'New Checkout Flow', enabled: true },
+                      { name: 'dark_mode', label: 'Dark Mode', enabled: true },
+                      { name: 'ai_assistant', label: 'AI Assistant', enabled: true, percentage: 25 },
+                      { name: 'beta_features', label: 'Beta Features', enabled: false },
+                    ].map((flag) => (
+                      <div key={flag.name} className="flex items-center justify-between p-3 rounded-lg bg-zinc-900/50">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-6 rounded-full relative ${flag.enabled ? 'bg-purple-600' : 'bg-zinc-700'}`}>
+                            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${flag.enabled ? 'right-1' : 'left-1'}`} />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-white">{flag.label}</p>
+                            <p className="text-xs text-zinc-500">{flag.name}</p>
+                          </div>
+                        </div>
+                        {flag.percentage && (
+                          <span className="text-xs px-2 py-1 rounded-full bg-purple-500/20 text-purple-400">{flag.percentage}%</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <p className="mt-4 text-center text-sm text-zinc-400">Control feature rollouts instantly</p>
+            </div>
+
+            {/* Error Tracking */}
+            <div className="group">
+              <div className="rounded-2xl overflow-hidden border border-zinc-800 hover:border-purple-500/30 transition-all hover:shadow-xl hover:shadow-purple-500/5">
+                <div className="bg-zinc-900 px-4 py-2.5 flex items-center gap-2 border-b border-zinc-800">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                  </div>
+                  <span className="text-xs text-zinc-500">Error Tracking</span>
+                </div>
+                <div className="bg-zinc-950 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="text-2xl font-bold text-white">3</p>
+                      <p className="text-xs text-zinc-500">Unresolved errors</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="px-2 py-1 rounded-lg bg-red-500/20 text-red-400 text-xs">2 Critical</span>
+                      <span className="px-2 py-1 rounded-lg bg-yellow-500/20 text-yellow-400 text-xs">1 Warning</span>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      { type: 'TypeError', msg: 'Cannot read property "id"', count: 142, time: '2m ago' },
+                      { type: 'NetworkError', msg: 'Failed to fetch', count: 89, time: '15m ago' },
+                      { type: 'ValidationError', msg: 'Email format invalid', count: 23, time: '1h ago' },
+                    ].map((error, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-zinc-900/50">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                            <svg className="w-4 h-4 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                              <line x1="12" y1="9" x2="12" y2="13" />
+                              <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-white truncate">{error.type}</p>
+                            <p className="text-xs text-zinc-500 truncate">{error.msg}</p>
+                          </div>
+                        </div>
+                        <div className="text-right flex-shrink-0 ml-4">
+                          <p className="text-sm font-medium text-white">{error.count}×</p>
+                          <p className="text-xs text-zinc-500">{error.time}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <p className="mt-4 text-center text-sm text-zinc-400">Track and resolve errors fast</p>
+            </div>
+
+            {/* LLM Analytics */}
+            <div className="group">
+              <div className="rounded-2xl overflow-hidden border border-zinc-800 hover:border-purple-500/30 transition-all hover:shadow-xl hover:shadow-purple-500/5">
+                <div className="bg-zinc-900 px-4 py-2.5 flex items-center gap-2 border-b border-zinc-800">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                  </div>
+                  <span className="text-xs text-zinc-500">LLM Analytics</span>
+                </div>
+                <div className="bg-zinc-950 p-6">
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-transparent border border-purple-500/20">
+                      <p className="text-xs text-zinc-500 mb-1">Total Spend</p>
+                      <p className="text-2xl font-bold text-white">$127.42</p>
+                      <p className="text-xs text-emerald-400">↓ 12% from last month</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-gradient-to-br from-cyan-500/10 to-transparent border border-cyan-500/20">
+                      <p className="text-xs text-zinc-500 mb-1">Total Tokens</p>
+                      <p className="text-2xl font-bold text-white">2.4M</p>
+                      <p className="text-xs text-zinc-400">This month</p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      { model: 'GPT-4 Turbo', tokens: '1.2M', cost: '$72.40', color: 'emerald' },
+                      { model: 'Claude 3 Opus', tokens: '890K', cost: '$42.30', color: 'purple' },
+                      { model: 'GPT-3.5', tokens: '310K', cost: '$12.72', color: 'cyan' },
+                    ].map((item) => (
+                      <div key={item.model} className="flex items-center justify-between p-2 rounded-lg bg-zinc-900/50">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2 h-2 rounded-full bg-${item.color}-500`} />
+                          <span className="text-sm text-white">{item.model}</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className="text-xs text-zinc-500">{item.tokens}</span>
+                          <span className="text-sm font-medium text-white">{item.cost}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <p className="mt-4 text-center text-sm text-zinc-400">Monitor AI costs across providers</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* TOOLS BY CATEGORY */}
       <section id="tools" className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
