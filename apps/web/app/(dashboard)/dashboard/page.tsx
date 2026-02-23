@@ -351,6 +351,72 @@ export default async function DashboardPage() {
         </div>
       </div>
 
+      {/* Uptime Preview - Full Width */}
+      {monitors && monitors.length > 0 && (
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-white">Uptime Status</h2>
+            <Link href="/dashboard/uptime" className="text-sm text-purple-400 hover:text-purple-300">
+              View all monitors →
+            </Link>
+          </div>
+          <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-950/30 via-zinc-900/60 to-emerald-950/30 border border-emerald-500/20">
+            <div className="space-y-4">
+              {monitors.slice(0, 2).map((monitor: { id: string; name: string; url: string; current_status: string; last_checked_at: string }) => (
+                <div key={monitor.id} className="flex items-center justify-between p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/50">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                      monitor.current_status === 'up' 
+                        ? 'bg-emerald-500/20 border border-emerald-500/30' 
+                        : 'bg-red-500/20 border border-red-500/30'
+                    }`}>
+                      <div className={`w-3 h-3 rounded-full ${
+                        monitor.current_status === 'up' ? 'bg-emerald-500 animate-pulse' : 'bg-red-500 animate-pulse'
+                      }`} />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-white">{monitor.name}</p>
+                      <p className="text-sm text-zinc-500 truncate max-w-md">{monitor.url}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6">
+                    {/* Mini uptime bars */}
+                    <div className="hidden sm:flex items-end gap-0.5 h-8">
+                      {Array.from({ length: 24 }).map((_, i) => (
+                        <div 
+                          key={i} 
+                          className={`w-1.5 rounded-sm ${
+                            monitor.current_status === 'up' 
+                              ? 'bg-emerald-500/40 hover:bg-emerald-500/60' 
+                              : i === 23 ? 'bg-red-500/60' : 'bg-emerald-500/40'
+                          }`}
+                          style={{ height: `${Math.random() * 50 + 50}%` }}
+                        />
+                      ))}
+                    </div>
+                    <div className="text-right">
+                      <p className={`text-lg font-bold ${
+                        monitor.current_status === 'up' ? 'text-emerald-400' : 'text-red-400'
+                      }`}>
+                        {monitor.current_status === 'up' ? 'Operational' : 'Down'}
+                      </p>
+                      <p className="text-xs text-zinc-500">
+                        Last check: {monitor.last_checked_at ? new Date(monitor.last_checked_at).toLocaleTimeString() : 'Pending'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {monitors.length > 2 && (
+              <p className="text-center text-sm text-zinc-500 mt-4">
+                + {monitors.length - 2} more monitor{monitors.length - 2 !== 1 ? 's' : ''}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Tools by Category */}
       <div>
         <h2 className="text-xl font-semibold text-white mb-6">Your Toolkit</h2>
