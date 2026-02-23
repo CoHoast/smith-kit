@@ -33,6 +33,18 @@ export default async function DashboardLayout({
     .eq('id', user.id)
     .single();
 
+  // Get subscription
+  const { data: subscription } = await supabase
+    .from('subscriptions')
+    .select('plan, status')
+    .eq('user_id', user.id)
+    .single();
+
+  const planDisplay = subscription?.plan === 'team' ? 'Premium' : 
+                      subscription?.plan === 'pro' ? 'Pro' : 'Free';
+  const planColor = subscription?.plan === 'team' ? 'text-purple-400' : 
+                    subscription?.plan === 'pro' ? 'text-cyan-400' : 'text-zinc-500';
+
   return (
     <div className="min-h-screen bg-[#09090b] flex">
       {/* Sidebar - Fixed/Sticky */}
@@ -57,7 +69,7 @@ export default async function DashboardLayout({
               <p className="text-sm font-medium text-white truncate">
                 {profile?.name || user.email}
               </p>
-              <p className="text-xs text-zinc-500 truncate">Free plan</p>
+              <p className={`text-xs truncate ${planColor}`}>{planDisplay} plan</p>
             </div>
           </div>
         </div>
