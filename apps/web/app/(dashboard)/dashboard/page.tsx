@@ -63,6 +63,98 @@ const tools = [
     statKey: 'flags',
     statLabel: 'Flags active',
   },
+  {
+    id: 'statuskit',
+    name: 'StatusKit',
+    description: 'Public status pages for your services',
+    icon: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+      </svg>
+    ),
+    color: 'from-yellow-500 to-orange-600',
+    href: '/dashboard/statuskit',
+    statKey: 'statusPages',
+    statLabel: 'Status pages',
+  },
+  {
+    id: 'eventlog',
+    name: 'EventLog',
+    description: 'Real-time event tracking for your apps',
+    icon: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+    ),
+    color: 'from-pink-500 to-rose-600',
+    href: '/dashboard/eventlog',
+    statKey: 'events',
+    statLabel: 'Events tracked',
+  },
+  {
+    id: 'cronpilot',
+    name: 'CronPilot',
+    description: 'Scheduled jobs with monitoring dashboard',
+    icon: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+    ),
+    color: 'from-teal-500 to-emerald-600',
+    href: '/dashboard/cron',
+    statKey: 'cronJobs',
+    statLabel: 'Active jobs',
+  },
+  {
+    id: 'webhooklab',
+    name: 'WebhookLab',
+    description: 'Debug, inspect, and replay webhooks',
+    icon: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2" />
+        <path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06" />
+        <path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8" />
+      </svg>
+    ),
+    color: 'from-violet-500 to-purple-600',
+    href: '/dashboard/webhooks',
+    statKey: 'webhooks',
+    statLabel: 'Webhooks received',
+  },
+  {
+    id: 'llm',
+    name: 'LLM Analytics',
+    description: 'Track AI/LLM API usage, costs, and performance',
+    icon: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z" />
+        <path d="M12 12v10" />
+        <path d="M8 22h8" />
+        <path d="M7 8h10" />
+      </svg>
+    ),
+    color: 'from-blue-500 to-indigo-600',
+    href: '/dashboard/llm',
+    statKey: 'llmRequests',
+    statLabel: 'API requests',
+  },
+  {
+    id: 'errorwatch',
+    name: 'ErrorWatch',
+    description: 'Track and resolve errors in your applications',
+    icon: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+        <line x1="12" y1="9" x2="12" y2="13" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+    ),
+    color: 'from-red-500 to-rose-600',
+    href: '/dashboard/errorwatch',
+    statKey: 'errors',
+    statLabel: 'Unresolved errors',
+  },
 ];
 
 // Activity icon components
@@ -132,6 +224,89 @@ export default async function DashboardPage() {
     .select('id, togglebox_projects!inner(user_id)')
     .eq('togglebox_projects.user_id', user?.id);
 
+  // StatusKit - status pages
+  const { data: statusPages } = await supabase
+    .from('statuskit_pages')
+    .select('id')
+    .eq('user_id', user?.id);
+
+  // EventLog - events
+  const { data: eventlogProjects } = await supabase
+    .from('eventlog_projects')
+    .select('id')
+    .eq('user_id', user?.id);
+  
+  let eventCount = 0;
+  if (eventlogProjects && eventlogProjects.length > 0) {
+    const { count } = await supabase
+      .from('eventlog_events')
+      .select('*', { count: 'exact', head: true })
+      .in('project_id', eventlogProjects.map(p => p.id));
+    eventCount = count || 0;
+  }
+
+  // CronPilot - active jobs
+  const { data: cronProjects } = await supabase
+    .from('cron_projects')
+    .select('id')
+    .eq('user_id', user?.id);
+  
+  let cronJobCount = 0;
+  if (cronProjects && cronProjects.length > 0) {
+    const { count } = await supabase
+      .from('cron_jobs')
+      .select('*', { count: 'exact', head: true })
+      .in('project_id', cronProjects.map(p => p.id))
+      .eq('is_active', true);
+    cronJobCount = count || 0;
+  }
+
+  // WebhookLab - webhooks received
+  const { data: webhookEndpoints } = await supabase
+    .from('webhook_endpoints')
+    .select('id')
+    .eq('user_id', user?.id);
+  
+  let webhookCount = 0;
+  if (webhookEndpoints && webhookEndpoints.length > 0) {
+    const { count } = await supabase
+      .from('webhook_requests')
+      .select('*', { count: 'exact', head: true })
+      .in('endpoint_id', webhookEndpoints.map(e => e.id));
+    webhookCount = count || 0;
+  }
+
+  // LLM Analytics - requests
+  const { data: llmProjects } = await supabase
+    .from('llm_projects')
+    .select('id')
+    .eq('user_id', user?.id);
+  
+  let llmRequestCount = 0;
+  if (llmProjects && llmProjects.length > 0) {
+    const { count } = await supabase
+      .from('llm_requests')
+      .select('*', { count: 'exact', head: true })
+      .in('project_id', llmProjects.map(p => p.id));
+    llmRequestCount = count || 0;
+  }
+
+  // ErrorWatch - unresolved errors
+  const { data: errorwatchProjects } = await supabase
+    .from('errorwatch_projects')
+    .select('id')
+    .eq('user_id', user?.id);
+  
+  let unresolvedErrorCount = 0;
+  if (errorwatchProjects && errorwatchProjects.length > 0) {
+    const { count } = await supabase
+      .from('errorwatch_issues')
+      .select('*', { count: 'exact', head: true })
+      .in('project_id', errorwatchProjects.map(p => p.id))
+      .eq('status', 'unresolved');
+    unresolvedErrorCount = count || 0;
+  }
+
   // Get recent activity
   const { data: recentChangelogs } = await supabase
     .from('changelogs')
@@ -151,6 +326,12 @@ export default async function DashboardPage() {
     monitors: monitors?.length || 0,
     commits: usage?.commitbot_count || 0,
     flags: flags?.length || 0,
+    statusPages: statusPages?.length || 0,
+    events: eventCount,
+    cronJobs: cronJobCount,
+    webhooks: webhookCount,
+    llmRequests: llmRequestCount,
+    errors: unresolvedErrorCount,
   };
 
   // Combine and sort recent activity
