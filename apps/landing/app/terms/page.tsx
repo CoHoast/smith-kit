@@ -98,8 +98,8 @@ export default function TermsOfService() {
                 </p>
                 <ul className="list-disc pl-6 space-y-2 mt-4">
                   <li><strong>Free Plan:</strong> Limited access to all tools with usage restrictions</li>
-                  <li><strong>Pro Plan ($39/month):</strong> Full access with higher usage limits</li>
-                  <li><strong>Premium Plan ($99/month):</strong> Full access with team features and priority support</li>
+                  <li><strong>Pro Plan ($49/month):</strong> Full access with higher usage limits</li>
+                  <li><strong>Premium Plan ($129/month):</strong> Full access with team features and priority support</li>
                 </ul>
                 <p className="mt-4">
                   Current pricing and plan details are available at smithkit.dev/pricing.

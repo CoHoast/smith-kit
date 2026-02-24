@@ -157,13 +157,13 @@ export default function SettingsPage() {
                   href="mailto:support@smithkit.dev?subject=Upgrade%20to%20Pro%20Plan"
                   className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium text-sm hover:opacity-90 transition-opacity"
                 >
-                  Upgrade for $39/mo
+                  Upgrade for $49/mo
                 </a>
                 <a 
                   href="mailto:support@smithkit.dev?subject=Upgrade%20to%20Premium%20Plan"
                   className="px-4 py-2 rounded-xl border border-purple-500/30 text-purple-400 font-medium text-sm hover:bg-purple-500/10 transition-colors"
                 >
-                  Premium $99/mo
+                  Premium $129/mo
                 </a>
               </div>
               <p className="text-xs text-[#6b6b80] mt-3">Contact us to upgrade — Stripe checkout coming soon!</p>

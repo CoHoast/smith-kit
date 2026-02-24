@@ -9,11 +9,13 @@ export interface PlanConfig {
   id: string;
   name: string;
   price: number;
+  priceAnnual?: number;
   description: string;
   features: string[];
   cta: string;
   popular?: boolean;
   stripePriceId?: string;
+  stripePriceIdAnnual?: string;
 }
 
 export const PLANS: Record<string, PlanConfig> = {
@@ -34,11 +36,13 @@ export const PLANS: Record<string, PlanConfig> = {
   pro: {
     id: 'pro',
     name: 'Pro',
-    price: 39,
+    price: 49,
+    priceAnnual: 39,
     description: 'For serious builders',
     cta: 'Start Free Trial',
     popular: true,
     stripePriceId: process.env.STRIPE_PRO_PRICE_ID,
+    stripePriceIdAnnual: process.env.STRIPE_PRO_ANNUAL_PRICE_ID,
     features: [
       'All current + future tools',
       '10 repos (Changelog)',
@@ -51,10 +55,12 @@ export const PLANS: Record<string, PlanConfig> = {
   premium: {
     id: 'premium',
     name: 'Premium',
-    price: 99,
+    price: 129,
+    priceAnnual: 99,
     description: 'For growing teams',
     cta: 'Start Free Trial',
     stripePriceId: process.env.STRIPE_PREMIUM_PRICE_ID,
+    stripePriceIdAnnual: process.env.STRIPE_PREMIUM_ANNUAL_PRICE_ID,
     features: [
       'All current + future tools',
       '50 repos (Changelog)',

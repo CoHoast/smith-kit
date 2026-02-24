@@ -9,11 +9,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "SmithKit — AI-Powered Dev Tools",
-  description: "Changelogs, uptime monitoring, commit bots, and more. AI-powered dev tools in one dashboard. $39/mo for everything.",
+  description: "Changelogs, uptime monitoring, commit bots, and more. AI-powered dev tools in one dashboard. $49/mo for everything.",
   keywords: ["developer tools", "AI dev tools", "changelog", "uptime monitoring", "commit bot", "dev platform"],
   openGraph: {
     title: "SmithKit — AI-Powered Dev Tools",
-    description: "Stop paying $500/mo for dev tools. Get AI-powered tools for $39/mo.",
+    description: "Stop paying $500/mo for dev tools. Get AI-powered tools for $49/mo.",
     type: "website",
   },
 };

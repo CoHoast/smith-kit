@@ -78,7 +78,7 @@ export const TOOLS: Tool[] = [
     id: 'togglebox',
     name: 'ToggleBox',
     tagline: 'Feature flags without the $400/mo',
-    description: 'LaunchDarkly charges $400/mo. We charge $39. Simple feature flags for teams that ship fast.',
+    description: 'LaunchDarkly charges $400/mo. We charge $49. Simple feature flags for teams that ship fast.',
     status: 'live',
     icon: 'toggle',
     color: 'bg-gradient-to-br from-cyan-500 to-blue-600',
@@ -263,9 +263,9 @@ export const PRICING = {
   },
   pro: {
     name: 'Pro',
-    price: 39,
-    priceAnnual: 29,
-    annualTotal: 348,
+    price: 49,
+    priceAnnual: 39,
+    annualTotal: 468,
     savings: 120,
     description: 'For serious indie hackers',
     cta: 'Start Free Trial',
@@ -282,10 +282,10 @@ export const PRICING = {
   },
   premium: {
     name: 'Premium',
-    price: 99,
-    priceAnnual: 79,
-    annualTotal: 948,
-    savings: 240,
+    price: 129,
+    priceAnnual: 99,
+    annualTotal: 1188,
+    savings: 360,
     description: 'For growing startups',
     cta: 'Start Free Trial',
     features: [
@@ -312,4 +312,4 @@ export const COMPETITORS = [
 
 // Total competitor cost for comparison
 export const COMPETITOR_TOTAL = '$550+/mo';
-export const SMITHKIT_PRICE = '$39/mo';
+export const SMITHKIT_PRICE = '$49/mo';

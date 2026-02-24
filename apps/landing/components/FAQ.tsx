@@ -17,7 +17,7 @@ const faqs = [
   },
   {
     question: "What does \"grandfathered forever\" mean?",
-    answer: "If you sign up now at $39/mo, that's your price forever — even if we raise prices later. Early adopters who believe in us get rewarded with locked-in pricing for life."
+    answer: "If you sign up now at $49/mo, that's your price forever — even if we raise prices later. Early adopters who believe in us get rewarded with locked-in pricing for life."
   },
   {
     question: "Can I cancel anytime?",
