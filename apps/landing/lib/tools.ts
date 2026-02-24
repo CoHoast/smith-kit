@@ -250,6 +250,7 @@ export const PRICING = {
   free: {
     name: 'Free',
     price: 0,
+    priceAnnual: 0,
     description: 'For side projects & testing',
     cta: 'Start Building',
     features: [
@@ -263,6 +264,9 @@ export const PRICING = {
   pro: {
     name: 'Pro',
     price: 39,
+    priceAnnual: 29,
+    annualTotal: 348,
+    savings: 120,
     description: 'For serious indie hackers',
     cta: 'Start Free Trial',
     popular: true,
@@ -279,6 +283,9 @@ export const PRICING = {
   premium: {
     name: 'Premium',
     price: 99,
+    priceAnnual: 79,
+    annualTotal: 948,
+    savings: 240,
     description: 'For growing startups',
     cta: 'Start Free Trial',
     features: [

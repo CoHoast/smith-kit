@@ -1,8 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { PRICING, COMPETITORS, COMPETITOR_TOTAL, SMITHKIT_PRICE, getLiveTools } from "@/lib/tools";
+import { COMPETITORS, COMPETITOR_TOTAL, SMITHKIT_PRICE, getLiveTools } from "@/lib/tools";
 import Navigation from "@/components/Navigation";
 import FAQ from "@/components/FAQ";
+import PricingSection from "@/components/PricingSection";
 
 function CheckIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
@@ -545,91 +546,7 @@ export default function HomePage() {
       </section>
 
       {/* PRICING */}
-      <section id="pricing" className="py-24 px-6 relative">
-        <div className="absolute inset-0 bg-gradient-to-t from-purple-950/10 via-transparent to-transparent" />
-        
-        <div className="relative max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple, honest pricing</h2>
-            <p className="text-zinc-400 text-lg">All tools included. No per-seat fees. No surprises.</p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Free */}
-            <div className="p-8 rounded-3xl bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 transition-colors">
-              <h3 className="text-xl font-semibold mb-1">{PRICING.free.name}</h3>
-              <p className="text-zinc-500 text-sm mb-6">{PRICING.free.description}</p>
-              <p className="text-5xl font-bold mb-8">${PRICING.free.price}<span className="text-lg text-zinc-500 font-normal">/mo</span></p>
-              
-              <ul className="space-y-4 mb-8">
-                {PRICING.free.features.map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-sm text-zinc-300">
-                    <CheckIcon className="w-5 h-5 text-zinc-500 flex-shrink-0 mt-0.5" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              
-              <Link href="https://smith-kit-production.up.railway.app/login" className="block w-full py-4 rounded-xl border border-zinc-700 text-center font-semibold hover:bg-zinc-800 transition-colors">
-                {PRICING.free.cta}
-              </Link>
-            </div>
-            
-            {/* Pro - Featured */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-b from-purple-500 via-fuchsia-500 to-cyan-500 rounded-3xl blur-sm opacity-50" />
-              <div className="relative p-[2px] rounded-3xl bg-gradient-to-b from-purple-500 via-fuchsia-500 to-cyan-500">
-                <div className="relative p-8 rounded-3xl bg-zinc-900 h-full">
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-sm font-semibold shadow-lg shadow-purple-500/30">
-                    Most Popular
-                  </div>
-                  
-                  <h3 className="text-xl font-semibold mb-1 mt-2">{PRICING.pro.name}</h3>
-                  <p className="text-zinc-500 text-sm mb-6">{PRICING.pro.description}</p>
-                  <p className="text-5xl font-bold mb-8">${PRICING.pro.price}<span className="text-lg text-zinc-500 font-normal">/mo</span></p>
-                  
-                  <ul className="space-y-4 mb-8">
-                    {PRICING.pro.features.map((f) => (
-                      <li key={f} className="flex items-start gap-3 text-sm text-zinc-300">
-                        <CheckIcon className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <Link href="https://smith-kit-production.up.railway.app/login" className="block w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-center font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-purple-500/25">
-                    {PRICING.pro.cta}
-                  </Link>
-                </div>
-              </div>
-            </div>
-            
-            {/* Premium */}
-            <div className="p-8 rounded-3xl bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 transition-colors">
-              <h3 className="text-xl font-semibold mb-1">{PRICING.premium.name}</h3>
-              <p className="text-zinc-500 text-sm mb-6">{PRICING.premium.description}</p>
-              <p className="text-5xl font-bold mb-8">${PRICING.premium.price}<span className="text-lg text-zinc-500 font-normal">/mo</span></p>
-              
-              <ul className="space-y-4 mb-8">
-                {PRICING.premium.features.map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-sm text-zinc-300">
-                    <CheckIcon className="w-5 h-5 text-zinc-500 flex-shrink-0 mt-0.5" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              
-              <Link href="https://smith-kit-production.up.railway.app/login" className="block w-full py-4 rounded-xl border border-zinc-700 text-center font-semibold hover:bg-zinc-800 transition-colors">
-                {PRICING.premium.cta}
-              </Link>
-            </div>
-          </div>
-          
-          <p className="text-center text-zinc-500 text-sm mt-10">
-            All plans include all 12 tools. Cancel anytime.
-          </p>
-        </div>
-      </section>
+      <PricingSection />
 
       {/* FAQ */}
       <FAQ />
