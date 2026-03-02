@@ -1,9 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
-import { sendEmail, getDowntimeAlertEmail, getUptimeRecoveryEmail } from '@/lib/email';
+import https from 'https';
+import { TLSSocket } from 'tls';
+import { sendEmail, getDowntimeAlertEmail, getUptimeRecoveryEmail, getSSLExpiryEmail } from '@/lib/email';
+import { sendUptimeAlert } from '@/lib/webhooks';
 
 // Force Node.js runtime for this route
 export const runtime = 'nodejs';
+
+// SSL expiry alert thresholds (days)
+const SSL_ALERT_THRESHOLDS = [30, 14, 7];
 
 // POST /api/uptime/check - Run checks for all active monitors (called by cron)
 export async function POST(request: Request) {
@@ -45,6 +51,57 @@ export async function POST(request: Request) {
   });
 }
 
+// Check SSL certificate and return days until expiry
+async function checkSSL(hostname: string): Promise<{ daysLeft: number | null; error?: string }> {
+  return new Promise((resolve) => {
+    const options = {
+      hostname,
+      port: 443,
+      method: 'GET',
+      rejectUnauthorized: false,
+      timeout: 10000,
+    };
+
+    const req = https.request(options, (res) => {
+      const socket = res.socket as TLSSocket;
+      const cert = socket.getPeerCertificate();
+      
+      if (!cert || Object.keys(cert).length === 0) {
+        resolve({ daysLeft: null, error: 'No certificate found' });
+        return;
+      }
+
+      const validTo = new Date(cert.valid_to);
+      const now = new Date();
+      const daysLeft = Math.floor((validTo.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+      resolve({ daysLeft });
+    });
+
+    req.on('error', (error) => {
+      resolve({ daysLeft: null, error: error.message });
+    });
+
+    req.on('timeout', () => {
+      req.destroy();
+      resolve({ daysLeft: null, error: 'Connection timeout' });
+    });
+
+    req.end();
+  });
+}
+
+// Get user's notification settings (webhook URLs)
+async function getUserNotificationSettings(supabase: ReturnType<typeof createClient>, userId: string) {
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('email, discord_webhook_url, slack_webhook_url, ssl_alert_sent_days')
+    .eq('id', userId)
+    .single();
+  
+  return profile || { email: null, discord_webhook_url: null, slack_webhook_url: null, ssl_alert_sent_days: null };
+}
+
 async function runCheck(
   monitor: {
     id: string;
@@ -56,10 +113,58 @@ async function runCheck(
     current_status: string;
     user_id: string;
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  supabase: any
+  supabase: ReturnType<typeof createClient>
 ) {
   const startTime = Date.now();
+  
+  // Get user notification settings
+  const notificationSettings = await getUserNotificationSettings(supabase, monitor.user_id);
+  
+  // Check SSL certificate for HTTPS URLs
+  let sslDaysLeft: number | null = null;
+  try {
+    const parsedUrl = new URL(monitor.url);
+    if (parsedUrl.protocol === 'https:') {
+      const sslResult = await checkSSL(parsedUrl.hostname);
+      sslDaysLeft = sslResult.daysLeft;
+      
+      // Check if we should send SSL expiry alerts
+      if (sslDaysLeft !== null) {
+        const alreadySentDays: number[] = notificationSettings.ssl_alert_sent_days || [];
+        
+        for (const threshold of SSL_ALERT_THRESHOLDS) {
+          if (sslDaysLeft <= threshold && !alreadySentDays.includes(threshold)) {
+            // Send SSL expiry alert
+            await sendSSLExpiryAlerts(
+              monitor.name,
+              monitor.url,
+              sslDaysLeft,
+              notificationSettings
+            );
+            
+            // Track that we sent this threshold alert
+            const newSentDays = [...alreadySentDays, threshold];
+            await supabase
+              .from('profiles')
+              .update({ ssl_alert_sent_days: newSentDays })
+              .eq('id', monitor.user_id);
+            
+            break; // Only send one alert per check
+          }
+        }
+        
+        // Reset tracking if SSL is renewed (more than 30 days)
+        if (sslDaysLeft > 30 && alreadySentDays.length > 0) {
+          await supabase
+            .from('profiles')
+            .update({ ssl_alert_sent_days: [] })
+            .eq('id', monitor.user_id);
+        }
+      }
+    }
+  } catch (e) {
+    console.error('SSL check error:', e);
+  }
   
   try {
     const controller = new AbortController();
@@ -78,13 +183,14 @@ async function runCheck(
     const responseTime = Date.now() - startTime;
     const newStatus: 'up' | 'degraded' | 'down' = response.status === monitor.expected_status ? 'up' : 'degraded';
 
-    // Save check result
+    // Save check result with SSL info
     await supabase.from('uptime_checks').insert({
       monitor_id: monitor.id,
       status: newStatus,
       response_time_ms: responseTime,
       status_code: response.status,
       region: 'us-east',
+      ssl_days_left: sslDaysLeft,
     });
 
     // Check for status change (for incident tracking)
@@ -96,6 +202,7 @@ async function runCheck(
       .update({ 
         current_status: newStatus,
         last_checked_at: new Date().toISOString(),
+        ssl_days_left: sslDaysLeft,
       })
       .eq('id', monitor.id);
 
@@ -117,6 +224,10 @@ async function runCheck(
           .eq('status', 'ongoing')
           .single();
         
+        const downDuration = incident?.started_at 
+          ? formatDuration(new Date(incident.started_at), new Date())
+          : 'unknown duration';
+        
         // Resolve any ongoing incidents
         await supabase
           .from('uptime_incidents')
@@ -127,29 +238,8 @@ async function runCheck(
           .eq('monitor_id', monitor.id)
           .eq('status', 'ongoing');
         
-        // Send recovery notification
-        try {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('email')
-            .eq('id', monitor.user_id)
-            .single();
-          
-          if (profile?.email) {
-            const downDuration = incident?.started_at 
-              ? formatDuration(new Date(incident.started_at), new Date())
-              : 'unknown duration';
-            
-            const { subject, html } = getUptimeRecoveryEmail(
-              monitor.name,
-              monitor.url,
-              downDuration
-            );
-            await sendEmail({ to: profile.email, subject, html });
-          }
-        } catch (emailError) {
-          console.error('Failed to send recovery alert:', emailError);
-        }
+        // Send recovery notifications (email + webhooks)
+        await sendRecoveryAlerts(monitor.name, monitor.url, downDuration, notificationSettings);
       }
     }
 
@@ -167,6 +257,7 @@ async function runCheck(
       response_time_ms: responseTime,
       error_message: isTimeout ? 'Request timeout' : errorMessage,
       region: 'us-east',
+      ssl_days_left: sslDaysLeft,
     });
 
     // Check for status change
@@ -178,26 +269,8 @@ async function runCheck(
         cause: isTimeout ? 'timeout' : 'connection_error',
       });
       
-      // Send alert notification
-      try {
-        // Get user email
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('email')
-          .eq('id', monitor.user_id)
-          .single();
-        
-        if (profile?.email) {
-          const { subject, html } = getDowntimeAlertEmail(
-            monitor.name,
-            monitor.url,
-            new Date()
-          );
-          await sendEmail({ to: profile.email, subject, html });
-        }
-      } catch (emailError) {
-        console.error('Failed to send downtime alert:', emailError);
-      }
+      // Send downtime alerts (email + webhooks)
+      await sendDowntimeAlerts(monitor.name, monitor.url, notificationSettings);
     }
 
     // Update monitor status
@@ -206,11 +279,74 @@ async function runCheck(
       .update({ 
         current_status: 'down',
         last_checked_at: new Date().toISOString(),
+        ssl_days_left: sslDaysLeft,
       })
       .eq('id', monitor.id);
 
     return { monitor_id: monitor.id, status: 'down', error: errorMessage };
   }
+}
+
+// Send downtime alerts via all channels
+async function sendDowntimeAlerts(
+  siteName: string,
+  url: string,
+  settings: { email?: string | null; discord_webhook_url?: string | null; slack_webhook_url?: string | null }
+) {
+  const promises: Promise<unknown>[] = [];
+  
+  // Email
+  if (settings.email) {
+    const { subject, html } = getDowntimeAlertEmail(siteName, url, new Date());
+    promises.push(sendEmail({ to: settings.email, subject, html }));
+  }
+  
+  // Discord & Slack webhooks
+  promises.push(sendUptimeAlert('down', siteName, url, settings));
+  
+  await Promise.allSettled(promises);
+}
+
+// Send recovery alerts via all channels
+async function sendRecoveryAlerts(
+  siteName: string,
+  url: string,
+  downtime: string,
+  settings: { email?: string | null; discord_webhook_url?: string | null; slack_webhook_url?: string | null }
+) {
+  const promises: Promise<unknown>[] = [];
+  
+  // Email
+  if (settings.email) {
+    const { subject, html } = getUptimeRecoveryEmail(siteName, url, downtime);
+    promises.push(sendEmail({ to: settings.email, subject, html }));
+  }
+  
+  // Discord & Slack webhooks
+  promises.push(sendUptimeAlert('up', siteName, url, settings, { downtime }));
+  
+  await Promise.allSettled(promises);
+}
+
+// Send SSL expiry alerts via all channels
+async function sendSSLExpiryAlerts(
+  siteName: string,
+  url: string,
+  daysLeft: number,
+  settings: { email?: string | null; discord_webhook_url?: string | null; slack_webhook_url?: string | null }
+) {
+  const promises: Promise<unknown>[] = [];
+  
+  // Email
+  if (settings.email) {
+    const { subject, html } = getSSLExpiryEmail(siteName, url, daysLeft);
+    promises.push(sendEmail({ to: settings.email, subject, html }));
+  }
+  
+  // Discord & Slack webhooks
+  promises.push(sendUptimeAlert('ssl', siteName, url, settings, { sslDaysLeft: daysLeft }));
+  
+  await Promise.allSettled(promises);
 }
 
 // Also support GET for easy testing
