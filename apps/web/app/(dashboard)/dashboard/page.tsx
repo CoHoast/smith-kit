@@ -47,17 +47,10 @@ const toolCategories = [
     name: 'Developer',
     color: 'purple',
     tools: [
-      { id: 'changelog', name: 'Changelog', desc: 'AI-powered release notes', href: '/dashboard/changelog', icon: (
+      { id: 'changelog', name: 'Changelog', desc: 'AI commits & release notes', href: '/dashboard/changelog', icon: (
         <svg className="w-5 h-5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4" />
           <path d="M19 17V5a2 2 0 0 0-2-2H4" />
-        </svg>
-      )},
-      { id: 'commitbot', name: 'CommitBot', desc: 'AI commit messages', href: '/dashboard/commitbot', icon: (
-        <svg className="w-5 h-5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="4" />
-          <line x1="1.05" y1="12" x2="7" y2="12" />
-          <line x1="17.01" y1="12" x2="22.96" y2="12" />
         </svg>
       )},
       { id: 'togglebox', name: 'ToggleBox', desc: 'Feature flags & rollouts', href: '/dashboard/togglebox', icon: (
@@ -72,12 +65,8 @@ const toolCategories = [
     name: 'Automation',
     color: 'cyan',
     tools: [
-      { id: 'cron', name: 'CronPilot', desc: 'Scheduled jobs & tasks', href: '/dashboard/cron', icon: (
-        <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
-        </svg>
-      )},
+      // AlertFlow (incident management) - coming soon
+      // { id: 'alertflow', name: 'AlertFlow', desc: 'Incidents & on-call', href: '/dashboard/alertflow', icon: ... },
       { id: 'webhooks', name: 'WebhookLab', desc: 'Test & debug webhooks', href: '/dashboard/webhooks', icon: (
         <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2" />

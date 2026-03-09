@@ -165,16 +165,15 @@ const navSections: NavSection[] = [
     title: 'Developer',
     items: [
       { name: 'Changelog', href: '/dashboard/changelog', icon: ScrollIcon },
-      { name: 'CommitBot', href: '/dashboard/commitbot', icon: GitCommitIcon },
       { name: 'ToggleBox', href: '/dashboard/togglebox', icon: ToggleIcon },
     ],
   },
   {
     title: 'Automation',
     items: [
-      { name: 'CronPilot', href: '/dashboard/cron', icon: CronIcon },
       { name: 'WebhookLab', href: '/dashboard/webhooks', icon: WebhookIcon },
       { name: 'EventLog', href: '/dashboard/eventlog', icon: EventLogIcon },
+      // TODO: Add AlertFlow (incident management) here
     ],
   },
   {
