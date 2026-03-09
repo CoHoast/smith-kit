@@ -283,7 +283,7 @@ export default function HomePage() {
                     </svg>
                   ))}
                 </div>
-                <p className="text-zinc-300 mb-6 leading-relaxed">"{t.quote}"</p>
+                <p className="text-zinc-300 mb-6 leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center text-white font-semibold text-sm">
                     {t.avatar}
