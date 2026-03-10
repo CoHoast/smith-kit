@@ -28,6 +28,11 @@ const toolCategories = [
           <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
         </svg>
       )},
+      { id: 'speedkit', name: 'SpeedKit', desc: 'Performance monitoring', href: '/dashboard/speedkit', icon: (
+        <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        </svg>
+      )},
       { id: 'statuskit', name: 'StatusKit', desc: 'Public status pages', href: '/dashboard/statuskit', icon: (
         <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="10" />
@@ -65,8 +70,6 @@ const toolCategories = [
     name: 'Automation',
     color: 'cyan',
     tools: [
-      // AlertFlow (incident management) - coming soon
-      // { id: 'alertflow', name: 'AlertFlow', desc: 'Incidents & on-call', href: '/dashboard/alertflow', icon: ... },
       { id: 'webhooks', name: 'WebhookLab', desc: 'Test & debug webhooks', href: '/dashboard/webhooks', icon: (
         <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2" />
