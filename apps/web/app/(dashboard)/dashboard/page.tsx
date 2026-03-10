@@ -70,6 +70,12 @@ const toolCategories = [
     name: 'Automation',
     color: 'cyan',
     tools: [
+      { id: 'alertflow', name: 'AlertFlow', desc: 'Incidents & on-call', href: '/dashboard/alertflow', icon: (
+        <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+      )},
       { id: 'webhooks', name: 'WebhookLab', desc: 'Test & debug webhooks', href: '/dashboard/webhooks', icon: (
         <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2" />
