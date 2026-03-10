@@ -28,6 +28,11 @@ const toolCategories = [
           <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
         </svg>
       )},
+      { id: 'speedkit', name: 'SpeedKit', desc: 'Performance monitoring', href: '/dashboard/speedkit', icon: (
+        <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        </svg>
+      )},
       { id: 'statuskit', name: 'StatusKit', desc: 'Public status pages', href: '/dashboard/statuskit', icon: (
         <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="10" />
@@ -53,13 +58,6 @@ const toolCategories = [
           <path d="M19 17V5a2 2 0 0 0-2-2H4" />
         </svg>
       )},
-      { id: 'commitbot', name: 'CommitBot', desc: 'AI commit messages', href: '/dashboard/commitbot', icon: (
-        <svg className="w-5 h-5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="4" />
-          <line x1="1.05" y1="12" x2="7" y2="12" />
-          <line x1="17.01" y1="12" x2="22.96" y2="12" />
-        </svg>
-      )},
       { id: 'togglebox', name: 'ToggleBox', desc: 'Feature flags & rollouts', href: '/dashboard/togglebox', icon: (
         <svg className="w-5 h-5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <rect x="1" y="5" width="22" height="14" rx="7" ry="7" />
@@ -72,12 +70,6 @@ const toolCategories = [
     name: 'Automation',
     color: 'cyan',
     tools: [
-      { id: 'cron', name: 'CronPilot', desc: 'Scheduled jobs & tasks', href: '/dashboard/cron', icon: (
-        <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
-        </svg>
-      )},
       { id: 'webhooks', name: 'WebhookLab', desc: 'Test & debug webhooks', href: '/dashboard/webhooks', icon: (
         <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2" />

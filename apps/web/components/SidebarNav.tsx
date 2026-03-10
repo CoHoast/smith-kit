@@ -107,6 +107,14 @@ function ErrorWatchIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
+function SpeedKitIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+    </svg>
+  );
+}
+
 function VaultIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -157,6 +165,7 @@ const navSections: NavSection[] = [
     title: 'Monitoring',
     items: [
       { name: 'Uptime', href: '/dashboard/uptime', icon: ActivityIcon },
+      { name: 'SpeedKit', href: '/dashboard/speedkit', icon: SpeedKitIcon },
       { name: 'StatusKit', href: '/dashboard/statuskit', icon: StatusIcon },
       { name: 'ErrorWatch', href: '/dashboard/errorwatch', icon: ErrorWatchIcon },
     ],
@@ -165,14 +174,12 @@ const navSections: NavSection[] = [
     title: 'Developer',
     items: [
       { name: 'Changelog', href: '/dashboard/changelog', icon: ScrollIcon },
-      { name: 'CommitBot', href: '/dashboard/commitbot', icon: GitCommitIcon },
       { name: 'ToggleBox', href: '/dashboard/togglebox', icon: ToggleIcon },
     ],
   },
   {
     title: 'Automation',
     items: [
-      { name: 'CronPilot', href: '/dashboard/cron', icon: CronIcon },
       { name: 'WebhookLab', href: '/dashboard/webhooks', icon: WebhookIcon },
       { name: 'EventLog', href: '/dashboard/eventlog', icon: EventLogIcon },
     ],
