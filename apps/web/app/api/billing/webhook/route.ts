@@ -77,36 +77,48 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 }
 
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
-  const userId = subscription.metadata?.user_id;
-  const plan = subscription.metadata?.plan;
-  
-  if (!userId) {
-    console.error('Missing user_id in subscription metadata:', subscription.id);
-    return;
-  }
+  try {
+    console.log('Processing subscription update:', subscription.id);
+    
+    const userId = subscription.metadata?.user_id;
+    const plan = subscription.metadata?.plan;
+    
+    console.log('Subscription metadata:', { userId, plan, customerId: subscription.customer });
+    
+    if (!userId) {
+      console.error('Missing user_id in subscription metadata:', subscription.id);
+      throw new Error(`Missing user_id in subscription metadata for ${subscription.id}`);
+    }
 
-  const planName = plan || inferPlanFromPriceId(subscription.items.data[0]?.price.id);
-  
-  // Update subscription in database
-  const { error } = await supabase
-    .from('subscriptions')
-    .upsert({
-      user_id: userId,
-      stripe_customer_id: subscription.customer as string,
-      stripe_subscription_id: subscription.id,
-      plan: planName,
-      status: subscription.status === 'active' ? 'active' : subscription.status,
-      current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-      current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-      updated_at: new Date().toISOString(),
-    }, {
-      onConflict: 'user_id',
-    });
+    const planName = plan || inferPlanFromPriceId(subscription.items.data[0]?.price.id);
+    
+    console.log(`Updating user ${userId} to plan ${planName}`);
+    
+    // Update subscription in database
+    const { data, error } = await supabase
+      .from('subscriptions')
+      .upsert({
+        user_id: userId,
+        stripe_customer_id: subscription.customer as string,
+        stripe_subscription_id: subscription.id,
+        plan: planName,
+        status: subscription.status === 'active' ? 'active' : subscription.status,
+        current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+        current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+        updated_at: new Date().toISOString(),
+      }, {
+        onConflict: 'user_id',
+      });
 
-  if (error) {
-    console.error('Failed to update subscription:', error);
-  } else {
-    console.log(`Updated subscription for user ${userId} to ${planName}`);
+    if (error) {
+      console.error('Database error updating subscription:', error);
+      throw error;
+    } else {
+      console.log(`Successfully updated subscription for user ${userId} to ${planName}`, data);
+    }
+  } catch (error) {
+    console.error('Error in handleSubscriptionUpdated:', error);
+    throw error;
   }
 }
 
