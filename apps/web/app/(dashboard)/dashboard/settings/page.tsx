@@ -295,25 +295,25 @@ export default function SettingsPage() {
         </div>
 
         {subscription?.plan === 'free' ? (
-          <div className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
             {/* Pro Plan */}
             <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border border-purple-500/20">
               <h3 className="font-bold text-white mb-2">Upgrade to Pro</h3>
               <p className="text-sm text-[#a1a1b5] mb-4">
-                All 12 tools, 10 projects each, higher API limits, 30-day retention
+                10 projects each, higher API limits, 30-day retention
               </p>
-              <div className="flex items-center gap-4 flex-wrap">
+              <div className="space-y-2">
                 <button
                   onClick={() => handleUpgrade('pro', 'monthly')}
                   disabled={isSaving}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                  className="w-full px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
                 >
                   {isSaving ? 'Loading...' : '$39.99/month'}
                 </button>
                 <button
                   onClick={() => handleUpgrade('pro', 'annual')}
                   disabled={isSaving}
-                  className="px-4 py-2 rounded-xl border border-purple-500/30 text-purple-400 font-medium text-sm hover:bg-purple-500/10 transition-colors disabled:opacity-50"
+                  className="w-full px-4 py-2 rounded-xl border border-purple-500/30 text-purple-400 font-medium text-sm hover:bg-purple-500/10 transition-colors disabled:opacity-50"
                 >
                   $29.99/month (annual)
                 </button>
@@ -324,20 +324,20 @@ export default function SettingsPage() {
             <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-500/10 to-green-500/10 border border-cyan-500/20">
               <h3 className="font-bold text-white mb-2">Upgrade to Premium</h3>
               <p className="text-sm text-[#a1a1b5] mb-4">
-                Everything in Pro + 50 projects, unlimited API calls, 90-day retention, up to 10 team members
+                50 projects, unlimited calls, 90-day retention, 10 team members
               </p>
-              <div className="flex items-center gap-4 flex-wrap">
+              <div className="space-y-2">
                 <button
                   onClick={() => handleUpgrade('premium', 'monthly')}
                   disabled={isSaving}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                  className="w-full px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
                 >
                   {isSaving ? 'Loading...' : '$99.99/month'}
                 </button>
                 <button
                   onClick={() => handleUpgrade('premium', 'annual')}
                   disabled={isSaving}
-                  className="px-4 py-2 rounded-xl border border-cyan-500/30 text-cyan-400 font-medium text-sm hover:bg-cyan-500/10 transition-colors disabled:opacity-50"
+                  className="w-full px-4 py-2 rounded-xl border border-cyan-500/30 text-cyan-400 font-medium text-sm hover:bg-cyan-500/10 transition-colors disabled:opacity-50"
                 >
                   $74.99/month (annual)
                 </button>
@@ -369,9 +369,9 @@ export default function SettingsPage() {
       <div className="mb-8 p-6 rounded-2xl bg-[#12121a] border border-[#1e1e2e]">
         <h2 className="text-lg font-bold text-white mb-4">Usage This Month</h2>
         
-        <div className="space-y-4">
+        <div className="grid md:grid-cols-3 gap-4">
           <div>
-            <div className="flex justify-between text-sm mb-1">
+            <div className="flex justify-between text-sm mb-2">
               <span className="text-[#a1a1b5]">Repos</span>
               <span className="text-white">0 / 1</span>
             </div>
@@ -381,7 +381,7 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <div className="flex justify-between text-sm mb-1">
+            <div className="flex justify-between text-sm mb-2">
               <span className="text-[#a1a1b5]">Monitors</span>
               <span className="text-white">0 / 3</span>
             </div>
@@ -391,7 +391,7 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <div className="flex justify-between text-sm mb-1">
+            <div className="flex justify-between text-sm mb-2">
               <span className="text-[#a1a1b5]">Commits</span>
               <span className="text-white">0 / 30</span>
             </div>
@@ -497,38 +497,198 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Changelog Notifications */}
+        </div>
+
+        {/* Additional Tool Alerts */}
+        <div className="grid md:grid-cols-2 gap-4 mt-6">
+          {/* ErrorWatch Alerts */}
           <div className="p-4 rounded-xl bg-[#0a0a0f]">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4" />
-                    <path d="M19 17V5a2 2 0 0 0-2-2H4" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-medium text-white">Changelog Notifications</p>
-                  <p className="text-xs text-[#6b6b80]">Notify users when you publish new releases</p>
-                </div>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
+                <svg className="w-4 h-4 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-white">Error Alerts</p>
+                <p className="text-xs text-[#6b6b80]">Get notified when errors occur</p>
               </div>
             </div>
-            <div className="space-y-3 pl-11">
-              <label className="flex items-center gap-3 cursor-pointer">
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
-                <span className="text-sm text-[#a1a1b5]">Email subscribers on new release</span>
+                <span className="text-sm text-[#a1a1b5]">Critical errors</span>
               </label>
-              <label className="flex items-center gap-3 cursor-pointer">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
-                <span className="text-sm text-[#a1a1b5]">Post to Slack on new release</span>
+                <span className="text-sm text-[#a1a1b5]">Error rate spikes</span>
               </label>
-              <label className="flex items-center gap-3 cursor-pointer">
+            </div>
+          </div>
+
+          {/* SpeedKit Alerts */}
+          <div className="p-4 rounded-xl bg-[#0a0a0f]">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-white">Performance Alerts</p>
+                <p className="text-xs text-[#6b6b80]">Monitor site speed and Core Web Vitals</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
-                <span className="text-sm text-[#a1a1b5]">Post to Discord on new release</span>
+                <span className="text-sm text-[#a1a1b5]">Slow page loads</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">Core Web Vitals issues</span>
+              </label>
+            </div>
+          </div>
+
+          {/* LLM Analytics Alerts */}
+          <div className="p-4 rounded-xl bg-[#0a0a0f]">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                <svg className="w-4 h-4 text-cyan-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-white">AI Cost Alerts</p>
+                <p className="text-xs text-[#6b6b80]">Monitor LLM spending and usage</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">Monthly budget exceeded</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">Unusual cost spikes</span>
+              </label>
+            </div>
+          </div>
+
+          {/* WebhookLab Alerts */}
+          <div className="p-4 rounded-xl bg-[#0a0a0f]">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                <svg className="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15,3 21,3 21,9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-white">Webhook Alerts</p>
+                <p className="text-xs text-[#6b6b80]">Get notified of webhook failures</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">Failed webhooks</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">High failure rates</span>
+              </label>
+            </div>
+          </div>
+
+          {/* VaultKit Security Alerts */}
+          <div className="p-4 rounded-xl bg-[#0a0a0f]">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-8 h-8 rounded-lg bg-yellow-500/20 flex items-center justify-center">
+                <svg className="w-4 h-4 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <circle cx="12" cy="16" r="1" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-white">Security Alerts</p>
+                <p className="text-xs text-[#6b6b80]">Monitor secret access and security</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">Unauthorized access attempts</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">Secret access alerts</span>
+              </label>
+            </div>
+          </div>
+
+          {/* StatusKit Incident Alerts */}
+          <div className="p-4 rounded-xl bg-[#0a0a0f]">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                <svg className="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22,4 12,14.01 9,11.01" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-white">Status Page Alerts</p>
+                <p className="text-xs text-[#6b6b80]">Incident and maintenance notifications</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">New incidents</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+                <span className="text-sm text-[#a1a1b5]">Incident updates</span>
               </label>
             </div>
           </div>
         </div>
+
+        {/* Changelog Notifications */}
+        <div className="p-4 rounded-xl bg-[#0a0a0f] mt-4">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+              <svg className="w-4 h-4 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4" />
+                <path d="M19 17V5a2 2 0 0 0-2-2H4" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-medium text-white">Changelog Notifications</p>
+              <p className="text-xs text-[#6b6b80]">Notify users when you publish new releases</p>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-3">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+              <span className="text-sm text-[#a1a1b5]">Email subscribers</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+              <span className="text-sm text-[#a1a1b5]">Post to Slack</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" className="w-4 h-4 rounded bg-[#1a1a25] border-[#27272a] text-[#6366f1] focus:ring-[#6366f1]" />
+              <span className="text-sm text-[#a1a1b5]">Post to Discord</span>
+            </label>
+          </div>
+        </div>
+      </div>
 
         <button 
           onClick={updateNotificationSettings}
