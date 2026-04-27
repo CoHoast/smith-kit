@@ -68,7 +68,7 @@ const toolCategories = [
 // Stats for credibility
 const stats = [
   { value: "50M+", label: "API calls tracked" },
-  { value: "2,000+", label: "Developers" },
+  { value: "12", label: "Tools included" },
   { value: "99.9%", label: "Uptime SLA" },
   { value: "<100ms", label: "Alert latency" },
 ];
@@ -193,8 +193,8 @@ export default function HomePage() {
                 </div>
               </div>
               
-              {/* Screenshot with video overlay */}
-              <div className="relative group cursor-pointer">
+              {/* Dashboard Screenshot */}
+              <div className="relative">
                 <Image 
                   src="/dashboard-preview.jpg" 
                   alt="SmithKit Dashboard" 
@@ -203,19 +203,6 @@ export default function HomePage() {
                   className="w-full"
                   priority
                 />
-                {/* Video play button overlay */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform">
-                    <svg className="w-8 h-8 text-purple-600 ml-1" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="px-4 py-2 rounded-full bg-black/70 text-white text-sm font-medium">
-                    Watch 60-second demo
-                  </span>
-                </div>
               </div>
             </div>
           </div>
@@ -228,7 +215,7 @@ export default function HomePage() {
         
         <div className="relative max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Stop paying for 10 different subscriptions
+            Stop paying for 12 different subscriptions
           </h2>
           <p className="text-zinc-400 text-lg mb-12">
             Replace expensive tools with one affordable suite
