@@ -161,6 +161,58 @@ export default function SettingsPage() {
     }
   };
 
+  const handleUpgrade = async (plan: 'pro' | 'premium', interval: 'monthly' | 'annual') => {
+    setIsSaving(true);
+    
+    try {
+      // Price IDs will be fetched from the API
+      const response = await fetch('/api/billing/price-ids');
+      const { priceIds } = await response.json();
+
+      const response = await fetch('/api/billing/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId: priceIds[plan][interval],
+          plan,
+          interval,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok && data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Failed to create checkout session: ' + (data.error || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Failed to start checkout process');
+    }
+    
+    setIsSaving(false);
+  };
+
+  const handleManageBilling = async () => {
+    try {
+      const response = await fetch('/api/billing/portal', {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+      
+      if (response.ok && data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Failed to access billing portal: ' + (data.error || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Portal error:', error);
+      alert('Failed to access billing portal');
+    }
+  };
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     window.location.href = '/';
@@ -244,32 +296,72 @@ export default function SettingsPage() {
 
         {subscription?.plan === 'free' ? (
           <div className="space-y-4">
+            {/* Pro Plan */}
             <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border border-purple-500/20">
               <h3 className="font-bold text-white mb-2">Upgrade to Pro</h3>
               <p className="text-sm text-[#a1a1b5] mb-4">
-                Get 10 repos, 50 monitors, 500 commits/month, and more.
+                All 12 tools, 10 projects each, higher API limits, 30-day retention
               </p>
-              <div className="flex items-center gap-4">
-                <a 
-                  href="mailto:support@smithkit.dev?subject=Upgrade%20to%20Pro%20Plan"
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium text-sm hover:opacity-90 transition-opacity"
+              <div className="flex items-center gap-4 flex-wrap">
+                <button
+                  onClick={() => handleUpgrade('pro', 'monthly')}
+                  disabled={isSaving}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
                 >
-                  Upgrade for $49/mo
-                </a>
-                <a 
-                  href="mailto:support@smithkit.dev?subject=Upgrade%20to%20Premium%20Plan"
-                  className="px-4 py-2 rounded-xl border border-purple-500/30 text-purple-400 font-medium text-sm hover:bg-purple-500/10 transition-colors"
+                  {isSaving ? 'Loading...' : '$39.99/month'}
+                </button>
+                <button
+                  onClick={() => handleUpgrade('pro', 'annual')}
+                  disabled={isSaving}
+                  className="px-4 py-2 rounded-xl border border-purple-500/30 text-purple-400 font-medium text-sm hover:bg-purple-500/10 transition-colors disabled:opacity-50"
                 >
-                  Premium $129/mo
-                </a>
+                  $29.99/month (annual)
+                </button>
               </div>
-              <p className="text-xs text-[#6b6b80] mt-3">Contact us to upgrade — Stripe checkout coming soon!</p>
+            </div>
+
+            {/* Premium Plan */}
+            <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-500/10 to-green-500/10 border border-cyan-500/20">
+              <h3 className="font-bold text-white mb-2">Upgrade to Premium</h3>
+              <p className="text-sm text-[#a1a1b5] mb-4">
+                Everything in Pro + 50 projects, unlimited API calls, 90-day retention, up to 10 team members
+              </p>
+              <div className="flex items-center gap-4 flex-wrap">
+                <button
+                  onClick={() => handleUpgrade('premium', 'monthly')}
+                  disabled={isSaving}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
+                  {isSaving ? 'Loading...' : '$99.99/month'}
+                </button>
+                <button
+                  onClick={() => handleUpgrade('premium', 'annual')}
+                  disabled={isSaving}
+                  className="px-4 py-2 rounded-xl border border-cyan-500/30 text-cyan-400 font-medium text-sm hover:bg-cyan-500/10 transition-colors disabled:opacity-50"
+                >
+                  $74.99/month (annual)
+                </button>
+              </div>
             </div>
           </div>
         ) : (
-          <button className="text-sm text-[#6b6b80] hover:text-white transition-colors">
-            Manage subscription →
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleManageBilling}
+              className="px-4 py-2 rounded-xl bg-zinc-700 text-white text-sm font-medium hover:bg-zinc-600 transition-colors"
+            >
+              Manage Billing
+            </button>
+            {subscription?.plan === 'pro' && (
+              <button
+                onClick={() => handleUpgrade('premium', 'monthly')}
+                disabled={isSaving}
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+              >
+                {isSaving ? 'Loading...' : 'Upgrade to Premium'}
+              </button>
+            )}
+          </div>
         )}
       </div>
 
