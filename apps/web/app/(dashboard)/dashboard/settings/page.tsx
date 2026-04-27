@@ -166,10 +166,10 @@ export default function SettingsPage() {
     
     try {
       // Price IDs will be fetched from the API
-      const response = await fetch('/api/billing/price-ids');
-      const { priceIds } = await response.json();
+      const priceResponse = await fetch('/api/billing/price-ids');
+      const { priceIds } = await priceResponse.json();
 
-      const response = await fetch('/api/billing/checkout', {
+      const checkoutResponse = await fetch('/api/billing/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -179,9 +179,9 @@ export default function SettingsPage() {
         }),
       });
 
-      const data = await response.json();
+      const data = await checkoutResponse.json();
       
-      if (response.ok && data.url) {
+      if (checkoutResponse.ok && data.url) {
         window.location.href = data.url;
       } else {
         alert('Failed to create checkout session: ' + (data.error || 'Unknown error'));
