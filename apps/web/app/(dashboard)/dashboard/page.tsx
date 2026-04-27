@@ -17,7 +17,7 @@ function ToolIcon({ children, color = 'purple' }: { children: React.ReactNode; c
   );
 }
 
-// Tool category sections
+// Tool category sections - matching marketing site exactly (3 tools each)
 const toolCategories = [
   {
     name: 'Monitoring',
@@ -26,11 +26,6 @@ const toolCategories = [
       { id: 'uptime', name: 'Uptime', desc: 'Monitor sites & APIs', href: '/dashboard/uptime', icon: (
         <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
-        </svg>
-      )},
-      { id: 'speedkit', name: 'SpeedKit', desc: 'Performance monitoring', href: '/dashboard/speedkit', icon: (
-        <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
         </svg>
       )},
       { id: 'statuskit', name: 'StatusKit', desc: 'Public status pages', href: '/dashboard/statuskit', icon: (
@@ -58,6 +53,13 @@ const toolCategories = [
           <path d="M19 17V5a2 2 0 0 0-2-2H4" />
         </svg>
       )},
+      { id: 'commitbot', name: 'CommitBot', desc: 'AI-powered commit messages', href: '/dashboard/commitbot', icon: (
+        <svg className="w-5 h-5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="4" />
+          <line x1="1.05" y1="12" x2="7" y2="12" />
+          <line x1="17.01" y1="12" x2="22.96" y2="12" />
+        </svg>
+      )},
       { id: 'togglebox', name: 'ToggleBox', desc: 'Feature flags & rollouts', href: '/dashboard/togglebox', icon: (
         <svg className="w-5 h-5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <rect x="1" y="5" width="22" height="14" rx="7" ry="7" />
@@ -67,7 +69,7 @@ const toolCategories = [
     ],
   },
   {
-    name: 'Automation',
+    name: 'Incident & Performance',
     color: 'cyan',
     tools: [
       { id: 'alertflow', name: 'AlertFlow', desc: 'Incidents & on-call', href: '/dashboard/alertflow', icon: (
@@ -76,16 +78,16 @@ const toolCategories = [
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
       )},
+      { id: 'speedkit', name: 'SpeedKit', desc: 'Performance monitoring', href: '/dashboard/speedkit', icon: (
+        <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        </svg>
+      )},
       { id: 'webhooks', name: 'WebhookLab', desc: 'Test & debug webhooks', href: '/dashboard/webhooks', icon: (
         <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2" />
           <path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06" />
           <path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8" />
-        </svg>
-      )},
-      { id: 'eventlog', name: 'EventLog', desc: 'Track user events', href: '/dashboard/eventlog', icon: (
-        <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       )},
     ],
@@ -106,10 +108,9 @@ const toolCategories = [
           <path d="M7 11V7a5 5 0 0 1 10 0v4" />
         </svg>
       )},
-      { id: 'depwatch', name: 'DepWatch', desc: 'Dependency security', href: '/dashboard/depwatch', icon: (
+      { id: 'eventlog', name: 'EventLog', desc: 'Track user events', href: '/dashboard/eventlog', icon: (
         <svg className="w-5 h-5 text-orange-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          <path d="M9 12l2 2 4-4" />
+          <path d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       )},
     ],

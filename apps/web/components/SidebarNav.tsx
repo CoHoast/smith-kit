@@ -174,7 +174,6 @@ const navSections: NavSection[] = [
     title: 'Monitoring',
     items: [
       { name: 'Uptime', href: '/dashboard/uptime', icon: ActivityIcon },
-      { name: 'SpeedKit', href: '/dashboard/speedkit', icon: SpeedKitIcon },
       { name: 'StatusKit', href: '/dashboard/statuskit', icon: StatusIcon },
       { name: 'ErrorWatch', href: '/dashboard/errorwatch', icon: ErrorWatchIcon },
     ],
@@ -183,15 +182,16 @@ const navSections: NavSection[] = [
     title: 'Developer',
     items: [
       { name: 'Changelog', href: '/dashboard/changelog', icon: ScrollIcon },
+      { name: 'CommitBot', href: '/dashboard/commitbot', icon: GitCommitIcon },
       { name: 'ToggleBox', href: '/dashboard/togglebox', icon: ToggleIcon },
     ],
   },
   {
-    title: 'Automation',
+    title: 'Incident & Performance',
     items: [
       { name: 'AlertFlow', href: '/dashboard/alertflow', icon: AlertFlowIcon },
+      { name: 'SpeedKit', href: '/dashboard/speedkit', icon: SpeedKitIcon },
       { name: 'WebhookLab', href: '/dashboard/webhooks', icon: WebhookIcon },
-      { name: 'EventLog', href: '/dashboard/eventlog', icon: EventLogIcon },
     ],
   },
   {
@@ -199,7 +199,7 @@ const navSections: NavSection[] = [
     items: [
       { name: 'LLM Analytics', href: '/dashboard/llm', icon: LLMIcon },
       { name: 'VaultKit', href: '/dashboard/vault', icon: VaultIcon },
-      { name: 'DepWatch', href: '/dashboard/depwatch', icon: DepWatchIcon },
+      { name: 'EventLog', href: '/dashboard/eventlog', icon: EventLogIcon },
     ],
   },
 ];
