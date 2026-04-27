@@ -35,13 +35,12 @@ const toolCategories = [
   },
   {
     name: "Developer",
-    description: "Ship faster, ship safer", 
+    description: "Ship faster, ship safer",
     color: "purple",
     tools: [
       { name: "Changelog", desc: "Turn 'fixed stuff' commits into release notes" },
       { name: "CommitBot", desc: "Never write 'misc fixes' again — AI does it" },
       { name: "ToggleBox", desc: "Ship to 1% of users, then everyone. Safely." },
-      { name: "EventLog", desc: "Track every event, search any moment" },
     ],
   },
   {
@@ -61,7 +60,7 @@ const toolCategories = [
     tools: [
       { name: "LLM Analytics", desc: "Stop guessing what GPT-4 is costing you" },
       { name: "VaultKit", desc: ".env files are not security. This is." },
-      { name: "DepWatch", desc: "Find vulnerable deps before hackers do" },
+      { name: "EventLog", desc: "Track every event, search any moment" },
     ],
   },
 ];

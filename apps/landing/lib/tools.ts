@@ -236,24 +236,7 @@ export const TOOLS: Tool[] = [
       'Secret rotation',
     ],
   },
-  {
-    id: 'depwatch',
-    name: 'DepWatch',
-    tagline: 'Dependency security scanner',
-    description: 'Know when your dependencies have vulnerabilities. Automatic scanning with fix suggestions.',
-    status: 'live',
-    icon: 'shield',
-    color: 'bg-gradient-to-br from-emerald-500 to-teal-600',
-    gradient: 'from-emerald-500 to-teal-600',
-    features: [
-      'Automatic vulnerability scanning',
-      'Severity ratings',
-      'Fix recommendations',
-      'GitHub integration',
-      'Slack alerts',
-      'License compliance',
-    ],
-  },
+  // DepWatch removed to keep total at 12 tools
 ];
 
 // Helper functions
