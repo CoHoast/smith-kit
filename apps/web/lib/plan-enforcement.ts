@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
-import { PLAN_LIMITS, type Plan } from '@smithkit/config/plan-limits';
+import { PLAN_LIMITS, type Plan } from '@/lib/plan-limits';
 
 export interface PlanCheck {
   allowed: boolean;
