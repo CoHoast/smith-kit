@@ -286,8 +286,8 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Subscription */}
-      <div id="billing" className="mb-8 p-6 rounded-2xl bg-[#12121a] border border-[#1e1e2e]">
+      {/* Subscription - Compact Layout */}
+      <div id="billing" className="mb-6 p-4 rounded-2xl bg-[#12121a] border border-[#1e1e2e]">
         <h2 className="text-lg font-bold text-white mb-4">Subscription</h2>
         
         <div className="flex items-center justify-between p-4 rounded-xl bg-[#0a0a0f] mb-4">
@@ -401,8 +401,8 @@ export default function SettingsPage() {
         )}
       </div>
 
-      {/* Usage */}
-      <div className="mb-8 p-6 rounded-2xl bg-[#12121a] border border-[#1e1e2e]">
+      {/* Usage - Compact Layout */}
+      <div className="mb-6 p-4 rounded-2xl bg-[#12121a] border border-[#1e1e2e]">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-white">Usage This Month</h2>
           <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-sm font-medium capitalize">
@@ -410,31 +410,31 @@ export default function SettingsPage() {
           </span>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-4">
-          <div>
-            <div className="flex justify-between text-sm mb-2">
-              <span className="text-[#a1a1b5]">Repos</span>
-              <span className="text-white">0 / {currentLimits.repos}</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-[#0a0a0f] rounded-xl p-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[#a1a1b5] text-sm">Repos</span>
+              <span className="text-white font-semibold">0 / {currentLimits.repos}</span>
             </div>
             <div className="h-2 rounded-full bg-[#1a1a25]">
               <div className="h-2 rounded-full bg-[#6366f1]" style={{ width: '0%' }} />
             </div>
           </div>
 
-          <div>
-            <div className="flex justify-between text-sm mb-2">
-              <span className="text-[#a1a1b5]">Monitors</span>
-              <span className="text-white">0 / {currentLimits.monitors}</span>
+          <div className="bg-[#0a0a0f] rounded-xl p-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[#a1a1b5] text-sm">Monitors</span>
+              <span className="text-white font-semibold">0 / {currentLimits.monitors}</span>
             </div>
             <div className="h-2 rounded-full bg-[#1a1a25]">
               <div className="h-2 rounded-full bg-green-500" style={{ width: '0%' }} />
             </div>
           </div>
 
-          <div>
-            <div className="flex justify-between text-sm mb-2">
-              <span className="text-[#a1a1b5]">Commits</span>
-              <span className="text-white">0 / {currentLimits.commits}</span>
+          <div className="bg-[#0a0a0f] rounded-xl p-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[#a1a1b5] text-sm">Commits</span>
+              <span className="text-white font-semibold">0 / {currentLimits.commits}</span>
             </div>
             <div className="h-2 rounded-full bg-[#1a1a25]">
               <div className="h-2 rounded-full bg-orange-500" style={{ width: '0%' }} />
@@ -443,11 +443,11 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Notifications */}
-      <div className="mb-8 p-6 rounded-2xl bg-[#12121a] border border-[#1e1e2e]">
+      {/* Notifications - Compact Layout */}
+      <div className="mb-6 p-4 rounded-2xl bg-[#12121a] border border-[#1e1e2e]">
         <h2 className="text-lg font-bold text-white mb-4">Notifications</h2>
         
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Uptime Alerts */}
           <div className="p-4 rounded-xl bg-[#0a0a0f]">
             <div className="flex items-center justify-between mb-4">
@@ -540,20 +540,20 @@ export default function SettingsPage() {
 
         </div>
 
-        {/* Additional Tool Alerts */}
-        <div className="grid md:grid-cols-2 gap-4 mt-6">
+        {/* Additional Tool Alerts - Compact Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {/* ErrorWatch Alerts */}
-          <div className="p-4 rounded-xl bg-[#0a0a0f]">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
-                <svg className="w-4 h-4 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className="p-3 rounded-lg bg-[#0a0a0f]">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-lg bg-red-500/20 flex items-center justify-center">
+                <svg className="w-3 h-3 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                   <line x1="12" y1="9" x2="12" y2="13" />
                   <line x1="12" y1="17" x2="12.01" y2="17" />
                 </svg>
               </div>
               <div>
-                <p className="font-medium text-white">Error Alerts</p>
+                <p className="font-medium text-white text-sm">Error Alerts</p>
                 <p className="text-xs text-[#6b6b80]">Get notified when errors occur</p>
               </div>
             </div>
@@ -570,15 +570,15 @@ export default function SettingsPage() {
           </div>
 
           {/* SpeedKit Alerts */}
-          <div className="p-4 rounded-xl bg-[#0a0a0f]">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center">
-                <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className="p-3 rounded-lg bg-[#0a0a0f]">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                <svg className="w-3 h-3 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
               <div>
-                <p className="font-medium text-white">Performance Alerts</p>
+                <p className="font-medium text-white text-sm">Performance Alerts</p>
                 <p className="text-xs text-[#6b6b80]">Monitor site speed and Core Web Vitals</p>
               </div>
             </div>
