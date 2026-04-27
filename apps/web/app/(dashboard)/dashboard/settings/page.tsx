@@ -26,7 +26,7 @@ export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isSavingNotifications, setIsSavingNotifications] = useState(false);
 
-  // Get plan-specific limits
+  // Get plan-specific limits - v2 
   const getPlanLimits = (plan: string) => {
     switch (plan) {
       case 'pro':
