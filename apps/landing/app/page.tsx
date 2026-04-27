@@ -137,7 +137,7 @@ export default function HomePage() {
             {/* CTA */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
               <Link 
-                href="https://smith-kit-production.up.railway.app/login" 
+                href="https://www.smithkit.io/login" 
                 className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-fuchsia-600 font-semibold text-lg hover:shadow-xl hover:shadow-purple-500/25 transition-all hover:-translate-y-0.5"
               >
                 Start Free
@@ -662,7 +662,7 @@ export default function HomePage() {
             <br className="hidden sm:block" /> to one {SMITHKIT_PRICE} subscription.
           </p>
           <Link 
-            href="https://smith-kit-production.up.railway.app/login"
+            href="https://www.smithkit.io/login"
             className="group inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-gradient-to-r from-purple-600 to-fuchsia-600 font-semibold text-xl hover:shadow-xl hover:shadow-purple-500/25 transition-all hover:-translate-y-0.5"
           >
             Start Building Free

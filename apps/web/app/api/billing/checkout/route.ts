@@ -93,8 +93,8 @@ export async function POST(request: Request) {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://smith-kit-production.up.railway.app'}/dashboard/settings?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://smith-kit-production.up.railway.app'}/dashboard/settings?canceled=true`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.smithkit.io'}/dashboard/settings?success=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.smithkit.io'}/dashboard/settings?canceled=true`,
       metadata: {
         user_id: user.id,
         plan: plan,

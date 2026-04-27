@@ -30,7 +30,7 @@ export async function POST() {
     // Create customer portal session
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: subscription.stripe_customer_id,
-      return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://smith-kit-production.up.railway.app'}/dashboard/settings`,
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.smithkit.io'}/dashboard/settings`,
     });
 
     return NextResponse.json({ 
