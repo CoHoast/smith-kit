@@ -94,6 +94,25 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
     
     console.log(`Updating user ${userId} to plan ${planName}`);
     
+    // Safely convert timestamps
+    let periodStart = null;
+    let periodEnd = null;
+    
+    try {
+      if (subscription.current_period_start) {
+        periodStart = new Date(subscription.current_period_start * 1000).toISOString();
+      }
+      if (subscription.current_period_end) {
+        periodEnd = new Date(subscription.current_period_end * 1000).toISOString();
+      }
+    } catch (dateError) {
+      console.error('Error converting timestamps:', {
+        start: subscription.current_period_start,
+        end: subscription.current_period_end,
+        error: dateError
+      });
+    }
+
     // Update subscription in database
     const { data, error } = await supabase
       .from('subscriptions')
@@ -103,8 +122,8 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
         stripe_subscription_id: subscription.id,
         plan: planName,
         status: subscription.status === 'active' ? 'active' : subscription.status,
-        current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-        current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+        current_period_start: periodStart,
+        current_period_end: periodEnd,
         updated_at: new Date().toISOString(),
       }, {
         onConflict: 'user_id',
