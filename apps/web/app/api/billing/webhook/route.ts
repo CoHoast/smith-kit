@@ -113,21 +113,45 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
       });
     }
 
-    // Update subscription in database
-    const { data, error } = await supabase
+    // Check if subscription exists
+    const { data: existingSubscription } = await supabase
       .from('subscriptions')
-      .upsert({
-        user_id: userId,
-        stripe_customer_id: subscription.customer as string,
-        stripe_subscription_id: subscription.id,
-        plan: planName,
-        status: subscription.status === 'active' ? 'active' : subscription.status,
-        current_period_start: periodStart,
-        current_period_end: periodEnd,
-        updated_at: new Date().toISOString(),
-      }, {
-        onConflict: 'user_id',
-      });
+      .select('id')
+      .eq('user_id', userId)
+      .single();
+
+    let data, error;
+
+    if (existingSubscription) {
+      // Update existing subscription
+      ({ data, error } = await supabase
+        .from('subscriptions')
+        .update({
+          stripe_customer_id: subscription.customer as string,
+          stripe_subscription_id: subscription.id,
+          plan: planName,
+          status: subscription.status === 'active' ? 'active' : subscription.status,
+          current_period_start: periodStart,
+          current_period_end: periodEnd,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('user_id', userId));
+    } else {
+      // Insert new subscription
+      ({ data, error } = await supabase
+        .from('subscriptions')
+        .insert({
+          user_id: userId,
+          stripe_customer_id: subscription.customer as string,
+          stripe_subscription_id: subscription.id,
+          plan: planName,
+          status: subscription.status === 'active' ? 'active' : subscription.status,
+          current_period_start: periodStart,
+          current_period_end: periodEnd,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }));
+    }
 
     if (error) {
       console.error('Database error updating subscription:', error);
