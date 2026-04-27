@@ -345,22 +345,44 @@ export default function SettingsPage() {
             </div>
           </div>
         ) : (
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handleManageBilling}
-              className="px-4 py-2 rounded-xl bg-zinc-700 text-white text-sm font-medium hover:bg-zinc-600 transition-colors"
-            >
-              Manage Billing
-            </button>
-            {subscription?.plan === 'pro' && (
+          <div className="space-y-4">
+            {/* Current Plan Display */}
+            <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border border-purple-500/20">
+              <h3 className="font-bold text-white mb-2">Current: {subscription?.plan === 'premium' ? 'Premium' : 'Pro'} Plan</h3>
+              <p className="text-sm text-[#a1a1b5] mb-4">
+                {subscription?.plan === 'premium' ? 'You have access to all premium features' : 'You have access to all pro features'}
+              </p>
+            </div>
+
+            {/* Plan Options */}
+            <div className="flex items-center gap-4 flex-wrap">
               <button
-                onClick={() => handleUpgrade('premium', 'monthly')}
-                disabled={isSaving}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                onClick={handleManageBilling}
+                className="px-4 py-2 rounded-xl bg-zinc-700 text-white text-sm font-medium hover:bg-zinc-600 transition-colors"
               >
-                {isSaving ? 'Loading...' : 'Upgrade to Premium'}
+                Manage Billing
               </button>
-            )}
+              
+              {subscription?.plan === 'pro' && (
+                <button
+                  onClick={() => handleUpgrade('premium', 'monthly')}
+                  disabled={isSaving}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
+                  {isSaving ? 'Loading...' : 'Upgrade to Premium'}
+                </button>
+              )}
+              
+              {subscription?.plan === 'premium' && (
+                <button
+                  onClick={() => handleUpgrade('pro', 'monthly')}
+                  disabled={isSaving}
+                  className="px-4 py-2 rounded-xl border border-purple-500/30 text-purple-400 font-medium text-sm hover:bg-purple-500/10 transition-colors disabled:opacity-50"
+                >
+                  {isSaving ? 'Loading...' : 'Downgrade to Pro'}
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>

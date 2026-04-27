@@ -224,10 +224,10 @@ export default async function DashboardPage() {
           <div className="relative">
             <p className="text-sm font-medium text-purple-300 mb-2">Current Plan</p>
             <p className="text-3xl font-bold text-white mb-1">
-              {subscription?.plan === 'team' ? 'Premium' : subscription?.plan === 'pro' ? 'Pro' : 'Free'}
+              {subscription?.plan === 'premium' ? 'Premium' : subscription?.plan === 'pro' ? 'Pro' : 'Free'}
             </p>
             <p className="text-sm text-zinc-400">
-              {subscription?.plan === 'team' || subscription?.plan === 'pro' ? 'All 12 tools unlocked' : 'Upgrade for full access'}
+              {subscription?.plan === 'premium' || subscription?.plan === 'pro' ? 'All 12 tools unlocked' : 'Upgrade for full access'}
             </p>
             {(!subscription || subscription?.plan === 'free') && (
               <Link
