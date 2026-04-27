@@ -688,7 +688,6 @@ export default function SettingsPage() {
             </label>
           </div>
         </div>
-      </div>
 
         <button 
           onClick={updateNotificationSettings}
