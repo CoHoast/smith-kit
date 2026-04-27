@@ -131,7 +131,7 @@ export default function AdminSupportPage() {
   );
 
   return (
-    <div className="p-10 max-w-7xl mx-auto">
+    <div className="p-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">Support Tools</h1>

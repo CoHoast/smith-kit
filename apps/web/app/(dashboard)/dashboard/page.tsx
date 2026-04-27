@@ -205,7 +205,7 @@ export default async function DashboardPage() {
   const monitorsDown = monitors?.filter(m => m.current_status === 'down').length || 0;
 
   return (
-    <div className="p-10 max-w-6xl mx-auto">
+    <div className="p-8">
       {/* Hero Header */}
       <div className="mb-12">
         <h1 className="text-4xl font-bold text-white tracking-tight mb-3">

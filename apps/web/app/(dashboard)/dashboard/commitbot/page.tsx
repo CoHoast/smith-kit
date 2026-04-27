@@ -1,6 +1,6 @@
 export default function CommitBotPage() {
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">CommitBot</h1>
