@@ -36,8 +36,8 @@ export const PLANS: Record<string, PlanConfig> = {
   pro: {
     id: 'pro',
     name: 'Pro',
-    price: 49,
-    priceAnnual: 39,
+    price: 39.99,
+    priceAnnual: 29.99,
     description: 'For serious builders',
     cta: 'Start Free Trial',
     popular: true,
@@ -55,8 +55,8 @@ export const PLANS: Record<string, PlanConfig> = {
   premium: {
     id: 'premium',
     name: 'Premium',
-    price: 129,
-    priceAnnual: 99,
+    price: 99.99,
+    priceAnnual: 74.99,
     description: 'For growing teams',
     cta: 'Start Free Trial',
     stripePriceId: process.env.STRIPE_PREMIUM_PRICE_ID,

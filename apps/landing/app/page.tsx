@@ -35,22 +35,23 @@ const toolCategories = [
   },
   {
     name: "Developer",
-    description: "Ship faster, ship safer",
+    description: "Ship faster, ship safer", 
     color: "purple",
     tools: [
       { name: "Changelog", desc: "Turn 'fixed stuff' commits into release notes" },
       { name: "CommitBot", desc: "Never write 'misc fixes' again — AI does it" },
       { name: "ToggleBox", desc: "Ship to 1% of users, then everyone. Safely." },
+      { name: "EventLog", desc: "Track every event, search any moment" },
     ],
   },
   {
-    name: "Automation",
-    description: "Automate the boring stuff",
+    name: "Incident & Performance",
+    description: "Stay ahead of issues",
     color: "cyan",
     tools: [
-      { name: "CronPilot", desc: "Run jobs on a schedule, no servers needed" },
+      { name: "AlertFlow", desc: "Manage incidents before they become outages" },
+      { name: "SpeedKit", desc: "Monitor performance and Core Web Vitals" },
       { name: "WebhookLab", desc: "Debug webhooks without console.log hell" },
-      { name: "EventLog", desc: "Track every event, search any moment" },
     ],
   },
   {
@@ -124,7 +125,7 @@ export default function HomePage() {
               12 dev tools.
               <br />
               <span className="bg-gradient-to-r from-purple-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-                One login. $39/mo.
+                One login. $39.99/mo.
               </span>
             </h1>
             
