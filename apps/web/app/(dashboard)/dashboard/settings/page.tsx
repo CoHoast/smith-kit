@@ -25,6 +25,20 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isSavingNotifications, setIsSavingNotifications] = useState(false);
+
+  // Get plan-specific limits
+  const getPlanLimits = (plan: string) => {
+    switch (plan) {
+      case 'pro':
+        return { repos: 10, monitors: 50, commits: 500 };
+      case 'premium':
+        return { repos: 50, monitors: 200, commits: 2000 };
+      default: // free
+        return { repos: 2, monitors: 5, commits: 30 };
+    }
+  };
+
+  const currentLimits = getPlanLimits(subscription?.plan || 'free');
   const [name, setName] = useState('');
   const [discordWebhook, setDiscordWebhook] = useState('');
   const [slackWebhook, setSlackWebhook] = useState('');
@@ -389,13 +403,18 @@ export default function SettingsPage() {
 
       {/* Usage */}
       <div className="mb-8 p-6 rounded-2xl bg-[#12121a] border border-[#1e1e2e]">
-        <h2 className="text-lg font-bold text-white mb-4">Usage This Month</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-white">Usage This Month</h2>
+          <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-sm font-medium capitalize">
+            {subscription?.plan || 'free'} Plan
+          </span>
+        </div>
         
         <div className="grid md:grid-cols-3 gap-4">
           <div>
             <div className="flex justify-between text-sm mb-2">
               <span className="text-[#a1a1b5]">Repos</span>
-              <span className="text-white">0 / 1</span>
+              <span className="text-white">0 / {currentLimits.repos}</span>
             </div>
             <div className="h-2 rounded-full bg-[#1a1a25]">
               <div className="h-2 rounded-full bg-[#6366f1]" style={{ width: '0%' }} />
@@ -405,7 +424,7 @@ export default function SettingsPage() {
           <div>
             <div className="flex justify-between text-sm mb-2">
               <span className="text-[#a1a1b5]">Monitors</span>
-              <span className="text-white">0 / 3</span>
+              <span className="text-white">0 / {currentLimits.monitors}</span>
             </div>
             <div className="h-2 rounded-full bg-[#1a1a25]">
               <div className="h-2 rounded-full bg-green-500" style={{ width: '0%' }} />
@@ -415,7 +434,7 @@ export default function SettingsPage() {
           <div>
             <div className="flex justify-between text-sm mb-2">
               <span className="text-[#a1a1b5]">Commits</span>
-              <span className="text-white">0 / 30</span>
+              <span className="text-white">0 / {currentLimits.commits}</span>
             </div>
             <div className="h-2 rounded-full bg-[#1a1a25]">
               <div className="h-2 rounded-full bg-orange-500" style={{ width: '0%' }} />
